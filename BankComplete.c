@@ -2,8 +2,8 @@
  * 48430 Fundamentals of C Programming - Assignment 3
  * Name: James Walsh
  * Student ID: 99143152
- * Name: James Walsh
- * Student ID: 
+ * Name: Sebastien Liao
+ * Student ID: 13689043
  * Name: 
  * Student ID: 
  * Name: 
@@ -84,7 +84,7 @@ int main(void)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -94,7 +94,7 @@ int user_login(void)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -105,7 +105,7 @@ void print_menu(const struct user_t user)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -116,7 +116,7 @@ int add_user(void)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -127,7 +127,7 @@ int edit_user(struct user_t user)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -138,7 +138,7 @@ int deposit(double value)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -149,7 +149,7 @@ int withdraw(double value)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -160,7 +160,7 @@ int transfer(double value)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -171,7 +171,7 @@ void print_statement(const struct user_t user)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -182,7 +182,7 @@ int delete_user(const struct user_t user)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -193,7 +193,7 @@ int store_users(const struct user_t user)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -205,7 +205,7 @@ int read_users(struct user_t users[])
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -216,7 +216,7 @@ int validate_user_ID(char user_ID[])
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -226,7 +226,7 @@ int validate_user_pw(char user_pw[])
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -237,7 +237,7 @@ int validate_sq(char user_ans[])
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -249,7 +249,7 @@ int validate_withdraw(/*fill*/)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
@@ -260,7 +260,7 @@ int encription(char string[])
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is reuqired to input into this function
+ * what is required to input into this function
  * OUTPUTS:
  * what gets returned
  * POST:
