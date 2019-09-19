@@ -4,8 +4,8 @@
  * Student ID: 99143152
  * Name: Sebastien Liao
  * Student ID: 13689043
- * Name: 
- * Student ID: 
+ * Name: Walter Chan
+ * Student ID: 12569582
  * Name: 
  * Student ID: 
  * Name: 
@@ -32,7 +32,7 @@
  * List preprocessing directives - DEFINES
 *******************************************************************************/
 
-#define DEIFNES "defined"
+#define DEFINES "defined"
 
 /*******************************************************************************
  * List structs - you may define struct date_time and struct flight only. Each
