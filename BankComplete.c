@@ -6,8 +6,8 @@
  * Student ID: 13689043
  * Name: Walter Chan
  * Student ID: 12569582
- * Name: 
- * Student ID: 
+ * Name: Tam-Hoang Nguyen
+ * Student ID: 13589256
  * Name: 
  * Student ID: 
  * Date of submission: -/-/2019
