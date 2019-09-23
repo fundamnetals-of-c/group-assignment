@@ -42,6 +42,10 @@
 typedef struct user
 {
     /*fill with user data variables*/
+    char user_num[USER_MAX_NUM_LEN + 1];
+    char user_pw[USER_MAX_PW_LEN + 1];
+    char user_lvl[USER_MAX_LVL_LEN + 1];
+    double acc_ammount;
 } user_t;
 
 /*******************************************************************************
