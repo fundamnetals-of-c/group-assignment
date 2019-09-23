@@ -58,17 +58,18 @@ typedef struct user
  * define your own functions if required.
 *******************************************************************************/
 int user_login(void); /*tam*/
-void print_menu(const struct user_t user); /*tam*/
+void login_menu(void);
+void print_menu(user_t * user); /*tam*/
 
 int add_user(void); /*james*/
-int edit_user(struct user_t user); /*james*/
+int edit_user(user_t * user); /*james*/
 int deposit(double value); /*tam*/
 int withdraw(double value); /*tam*/
 int transfer(double value); /*tam*/
-void print_statement(const struct user_t user); /*terry also compression*/
-int delete_user(const struct user_t user); /*james*/
-int store_users(const struct user_t user); /*james*/
-int read_users(struct user_t users[]); /*james*/
+void print_statement(user_t * user); /*terry also compression*/
+int delete_user(user_t * user); /*james*/
+int store_users(user_t * user); /*james*/
+int read_users(user_t * users); /*james*/
 
 int validate_user_ID(char user_ID[]); /*james*/
 int validate_user_pw(char user_pw[]); /*walter*/
@@ -85,7 +86,7 @@ int decryption(char string[]); /*seb and walter*/
 int main(void)
 {
     /*SETUP OF VARIABLES USED IN THE MAJORITY OF THE CODE*/
-	
+    login_menu();
     
     return 0;
 }
@@ -101,6 +102,8 @@ int main(void)
 *******************************************************************************/
 int user_login(void)
 {
+return 1;
+/*
 	int i;
 	char user[30], pass[30], perm[30];
 	FILE *ftpr = NULL;
@@ -115,12 +118,47 @@ int user_login(void)
 	for (i = 0; fptr == NULL; i++) {
 		fscan(fptr, "%s", user_ID);
 		validate_user_ID(user_ID);
-		/*strcomp with username in file*/
-		/*Do the same for pass*/
+		strcomp with username in file
+		Do the same for pass
 	}
 
 	fscan(fptr, "%s", perm);
 	return user.perm;
+*/
+}
+
+/*******************************************************************************
+ * Description
+ * INPUTS:
+ * what is required to input into this function
+ * OUTPUTS:
+ * what gets returned
+ * POST:
+ * what happens to pointers and data after the function
+*******************************************************************************/
+void login_menu()
+{
+char userID[120];
+char userPW[120];
+    printf("please enter a user name");
+    scanf("%s", userID);
+    /*validate user ID*/
+    printf("please enter your password");
+    scanf("%s", userPW);
+    /*check against database*/
+}
+
+/*******************************************************************************
+ * Description
+ * INPUTS:
+ * what is required to input into this function
+ * OUTPUTS:
+ * what gets returned
+ * POST:
+ * what happens to pointers and data after the function
+*******************************************************************************/
+void print_menu(user_t * user)
+{ 
 }
 /*******************************************************************************
  * Description
@@ -131,19 +169,10 @@ int user_login(void)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void print_menu(const struct user_t user)
-
-/*******************************************************************************
- * Description
- * INPUTS:
- * what is required to input into this function
- * OUTPUTS:
- * what gets returned
- * POST:
- * what happens to pointers and data after the function
-*******************************************************************************/
 int add_user(void)
-
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -153,8 +182,10 @@ int add_user(void)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int edit_user(struct user_t user)
-
+int edit_user(user_t * user)
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -165,7 +196,9 @@ int edit_user(struct user_t user)
  * what happens to pointers and data after the function
 *******************************************************************************/
 int deposit(double value)
-
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -176,7 +209,9 @@ int deposit(double value)
  * what happens to pointers and data after the function
 *******************************************************************************/
 int withdraw(double value)
-
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -187,7 +222,9 @@ int withdraw(double value)
  * what happens to pointers and data after the function
 *******************************************************************************/
 int transfer(double value)
-
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -197,8 +234,9 @@ int transfer(double value)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void print_statement(const struct user_t user)
-
+void print_statement(user_t * user)
+{
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -208,8 +246,10 @@ void print_statement(const struct user_t user)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int delete_user(const struct user_t user)
-
+int delete_user(user_t * user)
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -219,8 +259,10 @@ int delete_user(const struct user_t user)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int store_users(const struct user_t user)
-
+int store_users(user_t * user)
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -230,9 +272,10 @@ int store_users(const struct user_t user)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int read_users(struct user_t users[])
-
-
+int read_users(user_t * users)
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -243,7 +286,9 @@ int read_users(struct user_t users[])
  * what happens to pointers and data after the function
 *******************************************************************************/
 int validate_user_ID(char user_ID[])
-
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -254,6 +299,9 @@ int validate_user_ID(char user_ID[])
  * what happens to pointers and data after the function
 *******************************************************************************/
 int validate_user_pw(char user_pw[])
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -264,7 +312,7 @@ int validate_user_pw(char user_pw[])
  * what happens to pointers and data after the function
 *******************************************************************************/
 void validate_sq() {
-	char answer[];
+	char answer[124];
 	int good_Answer = 0;
 	/*FILE* fp = fopen(filename,"r");*/
 	while(good_Answer < 3) {
@@ -288,7 +336,9 @@ void validate_sq() {
  * what happens to pointers and data after the function
 *******************************************************************************/
 int validate_withdraw(/*fill*/)
-
+{
+return 1;
+}
 
 /*******************************************************************************
  * Description
@@ -300,7 +350,9 @@ int validate_withdraw(/*fill*/)
  * what happens to pointers and data after the function
 *******************************************************************************/
 int encryption(char string[])
-
+{
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -311,3 +363,6 @@ int encryption(char string[])
  * what happens to pointers and data after the function
 *******************************************************************************/
 int decryption(char string[])
+{
+return 1;
+}
