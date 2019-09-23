@@ -33,6 +33,10 @@
 *******************************************************************************/
 
 #define DEFINES "defined"
+#define USER_MAX_NUM_LEN 6
+#define USER_MAX_PW_LEN 32
+#define USER_MAX_LVL_LEN 5
+
 
 /*******************************************************************************
  * List structs - you may define struct date_time and struct flight only. Each
