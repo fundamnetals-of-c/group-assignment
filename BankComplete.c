@@ -50,6 +50,7 @@ typedef struct user
     char user_pw[USER_MAX_PW_LEN + 1];
     char user_lvl[USER_MAX_LVL_LEN + 1];
     double acc_ammount;
+    struct user * next;
 } user_t;
 
 /*******************************************************************************
