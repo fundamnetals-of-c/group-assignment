@@ -58,8 +58,9 @@ typedef struct user
  * define your own functions if required.
 *******************************************************************************/
 int user_login(void); /*tam*/
-void login_menu(void);
+void login_menu(user_t * user);
 void print_menu(user_t * user); /*tam*/
+void admin_menu(void);
 
 int add_user(void); /*james*/
 int edit_user(user_t * user); /*james*/
@@ -85,8 +86,25 @@ int decryption(char string[]); /*seb and walter*/
 *******************************************************************************/
 int main(void)
 {
+    user_t * start = NULL;
+    start = malloc(sizeof(user_t));
+
+    if(start == NULL)
+    {
+        printf("mem error");
+        return -1;
+    }
+
     /*SETUP OF VARIABLES USED IN THE MAJORITY OF THE CODE*/
-    login_menu();
+    
+    
+    login_menu(start);
+
+printf("your user name is: %s\n", start->user_num);
+printf("your password is: %s\n", start->user_pw);
+printf("your user level is: %s\n", start->user_lvl);
+
+    print_menu(start);
     
     return 0;
 }
@@ -136,15 +154,18 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void login_menu()
+void login_menu(user_t * user)
 {
-char userID[120];
-char userPW[120];
-    printf("please enter a user name");
+    char userID[USER_MAX_NUM_LEN + 1];
+    char userPW[USER_MAX_PW_LEN + 1];
+    printf("please enter a user name: ");
     scanf("%s", userID);
+    strcpy(user->user_num,userID);
     /*validate user ID*/
-    printf("please enter your password");
+    printf("please enter your password: ");
     scanf("%s", userPW);
+    strcpy(user->user_pw,userPW);
+    strcpy(user->user_lvl,"admin");
     /*check against database*/
 }
 
@@ -159,6 +180,46 @@ char userPW[120];
 *******************************************************************************/
 void print_menu(user_t * user)
 { 
+    
+    if(strcmp(user->user_lvl,"admin") == 0)
+    {
+        admin_menu();
+    }
+
+        
+}
+
+void admin_menu(void)
+{
+    int user_input = NULL;
+    while(1)
+    {
+        printf("\n"
+        "1. add user\n"
+        "2. remove user\n"
+        "3. view user statement\n"
+        "4. log out\n");
+    
+        scanf("%d", &user_input);
+        switch(user_input)
+        {
+            case 1 :
+                    printf("add user\n");
+                    break;
+            case 2 :
+                    printf("remove user\n");
+                    break;
+            case 3 :
+                    printf("view a users statement\n");
+                    break;
+            case 4 :
+                    printf("logging out\n");
+                    return;
+            default:
+                    printf("Invalid input\n");
+                    break;
+        }
+    }
 }
 /*******************************************************************************
  * Description
