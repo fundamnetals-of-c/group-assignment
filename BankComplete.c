@@ -255,7 +255,7 @@ int validate_withdraw(/*fill*/)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int encription(char string[])
+int encryption(char string[])
 
 /*******************************************************************************
  * Description
@@ -266,4 +266,4 @@ int encription(char string[])
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int decription(char string[])
+int decryption(char string[])
