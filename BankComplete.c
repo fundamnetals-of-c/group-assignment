@@ -67,7 +67,7 @@ int read_users(struct user_t users[]); /*james*/
 
 int validate_user_ID(char user_ID[]); /*james*/
 int validate_user_pw(char user_pw[]); /*walter*/
-int validate_sq(char user_ans[]); /*seb*/
+void validate_sq(); /*seb*/
 int validate_withdraw(/*fill*/); /*tam*/
 
 int encryption(char string[]); /*seb and walter*/
@@ -258,7 +258,20 @@ int validate_user_pw(char user_pw[])
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int validate_sq(char user_ans[])
+void validate_sq() {
+	char answer[];
+	int good_Answer = 0;
+	/*FILE* fp = fopen(filename,"r");*/
+	while(good_Answer < 3) {
+		printf("security question\n");
+		scanf("%s",answer);
+		if(strcmp(answer," security answer") == 0) { 
+			good_Answer++; 
+			/*go to the next question in the text files*/
+		}
+		else { printf("Wrong answer\n"); }
+	}
+}
 
 /*******************************************************************************
  * Description
