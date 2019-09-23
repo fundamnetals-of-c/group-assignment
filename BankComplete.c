@@ -8,8 +8,8 @@
  * Student ID: 12569582
  * Name: Tam-Hoang Nguyen
  * Student ID: 13589256
- * Name: 
- * Student ID: 
+ * Name: Eleftherios Asiminaris
+ * Student ID: 12889097
  * Date of submission: -/-/2019
  * A brief statement on what you could achieve (less than 50 words):
  * 
@@ -66,8 +66,8 @@ int validate_user_pw(char user_pw[]); /*walter*/
 int validate_sq(char user_ans[]); /*seb*/
 int validate_withdraw(/*fill*/); /*tam*/
 
-int encription(char string[]); /*seb and walter*/
-int decription(char string[]); /*seb and walter*/
+int encryption(char string[]); /*seb and walter*/
+int decryption(char string[]); /*seb and walter*/
 /*to be extended*/
 
 /*******************************************************************************
