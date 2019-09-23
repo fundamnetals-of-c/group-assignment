@@ -95,6 +95,28 @@ int main(void)
  * what happens to pointers and data after the function
 *******************************************************************************/
 int user_login(void)
+{
+	int i;
+	char user[30], pass[30], perm[30];
+	FILE *ftpr = NULL;
+	ftpr = fopen("login.txt", "r");
+	
+	printf("Username: ");
+	scanf("%s", user);
+	printf("Password: ");
+	scanf("%s", pass);
+
+	
+	for (i = 0; fptr == NULL; i++) {
+		fscan(fptr, "%s", user_ID);
+		validate_user_ID(user_ID);
+		/*strcomp with username in file*/
+		/*Do the same for pass*/
+	}
+
+	fscan(fptr, "%s", perm);
+	return user.perm;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
