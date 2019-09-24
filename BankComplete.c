@@ -49,7 +49,7 @@ typedef struct user
     char user_num[USER_MAX_NUM_LEN + 1];
     char user_pw[USER_MAX_PW_LEN + 1];
     char user_lvl[USER_MAX_LVL_LEN + 1];
-    double acc_ammount;
+    double acc_balance;
     struct user * next;
 } user_t;
 
@@ -62,7 +62,7 @@ void login_menu(user_t * user);
 void print_menu(user_t * user); /*tam*/
 void admin_menu(void);
 
-int add_user(void); /*james*/
+int add_user(user_t * user); /*james*/
 int edit_user(user_t * user); /*james*/
 int deposit(double value); /*tam*/
 int withdraw(double value); /*tam*/
@@ -94,6 +94,7 @@ int main(void)
         printf("mem error");
         return -1;
     }
+    start->next = NULL;
 
     /*SETUP OF VARIABLES USED IN THE MAJORITY OF THE CODE*/
     
@@ -230,9 +231,42 @@ void admin_menu(void)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int add_user(void)
+int add_user(user_t * user)
 {
-return 1;
+
+    char user_num[USER_MAX_NUM_LEN + 1];
+    char user_pw[USER_MAX_PW_LEN + 1];
+    char user_lvl[USER_MAX_LVL_LEN + 1];
+    double acc_balance;
+
+
+    /*entering user data*/
+    printf("Enter user information\n");
+    printf("Enter the new user number: \n");
+    scanf("%s", user_num);
+    /*validate*/
+    printf("Enter the new user password: \n"); /*should this be done upon first sign in?*/
+    scanf("%s", user_pw);
+/*validate*/
+    printf("Enter the user level");
+/*validate*/
+    scanf("%s", user_lvl);
+    printf("Enter user initial account balance");
+    scanf("%lf", &acc_balance);
+
+    user_t * it = user;
+    
+    if(strcmp(it->user_lvl, "first") == 0);
+    {
+        }
+    while(it->next != NULL)
+    {
+        it = it->next;
+    }
+    it->next = malloc(sizeof(user_t));
+    /*entering user data*/
+    
+    return 1;
 }
 /*******************************************************************************
  * Description
