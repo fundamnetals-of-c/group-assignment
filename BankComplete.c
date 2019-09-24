@@ -60,7 +60,9 @@ typedef struct user
 int user_login(void); /*tam*/
 void login_menu(user_t * user);
 void print_menu(user_t * user); /*tam*/
-void admin_menu(void);
+void admin_menu(user_t * user);
+
+void print_users(user_t * user);
 
 int add_user(user_t * user); /*james*/
 int edit_user(user_t * user); /*james*/
@@ -184,13 +186,13 @@ void print_menu(user_t * user)
     
     if(strcmp(user->user_lvl,"admin") == 0)
     {
-        admin_menu();
+        admin_menu(user);
     }
 
         
 }
 
-void admin_menu(void)
+void admin_menu(user_t * user)
 {
     int user_input = NULL;
     while(1)
@@ -206,6 +208,8 @@ void admin_menu(void)
         {
             case 1 :
                     printf("add user\n");
+                    add_user(user);
+print_users(user);
                     break;
             case 2 :
                     printf("remove user\n");
@@ -256,15 +260,27 @@ int add_user(user_t * user)
 
     user_t * it = user;
     
-    if(strcmp(it->user_lvl, "first") == 0);
+    if(strcmp(it->user_lvl, "first") == 0)
     {
+    strcpy(it->user_num, user_num);
+    strcpy(it->user_pw, user_pw);
+    strcpy(it->user_lvl, user_lvl);
+    it->acc_balance = acc_balance;
         }
-    while(it->next != NULL)
+    else
+    {
+        while(it->next != NULL)
     {
         it = it->next;
     }
     it->next = malloc(sizeof(user_t));
-    /*entering user data*/
+    /*entering user data into struct*/
+    strcpy(it->next->user_num, user_num);
+    strcpy(it->next->user_pw, user_pw);
+    strcpy(it->next->user_lvl, user_lvl);
+    it->next->acc_balance = acc_balance;
+    it->next->next = NULL;
+}
     
     return 1;
 }
@@ -280,6 +296,25 @@ int add_user(user_t * user)
 int edit_user(user_t * user)
 {
 return 1;
+}
+
+/*******************************************************************************
+ * Description
+ * INPUTS:
+ * what is required to input into this function
+ * OUTPUTS:
+ * what gets returned
+ * POST:
+ * what happens to pointers and data after the function
+*******************************************************************************/
+void print_users(user_t * user)
+{
+    user_t * it = user;
+
+while(it != NULL){
+printf("%s\n", it->user_num);
+it = it->next;
+}
 }
 /*******************************************************************************
  * Description
