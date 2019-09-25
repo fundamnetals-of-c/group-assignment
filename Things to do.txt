@@ -4,4 +4,14 @@ add anything to the functions you have been given
 
 start report and finish report
 
-due -friday
+due -friday (submitted monday due to delays)
+
+get the login, admin and user menus working and responding to inputs with their name so people can further work on their own classes
+
+start database for login users to be store somewhere
+
+access and referencing the logged in user to the login users database
+
+add defines for the data base name
+
+due monday 30/9
