@@ -43,36 +43,38 @@
  * struct definition should have only the fields mentioned in the assignment
  * description.
 *******************************************************************************/
-typedef struct user
+typedef struct users
 {
     /*fill with user data variables*/
     char user_num[USER_MAX_NUM_LEN + 1];
     char user_pw[USER_MAX_PW_LEN + 1];
     char user_lvl[USER_MAX_LVL_LEN + 1];
     double acc_balance;
-    struct user * next;
-} user_t;
+    struct users * next;
+} users_t;
+
+ 
 
 /*******************************************************************************
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
 *******************************************************************************/
 int user_login(void); /*tam*/
-void login_menu(user_t * user);
-void print_menu(user_t * user); /*tam*/
-void admin_menu(user_t * user);
+void login_menu(users_t * user);
+void print_menu(users_t * user); /*tam*/
+void admin_menu(users_t * user);
 
-void print_users(user_t * user);
+void print_users(users_t * user);
 
-int add_user(user_t * user); /*james*/
-int edit_user(user_t * user); /*james*/
+int add_user(users_t * user); /*james*/
+int edit_user(users_t * user); /*james*/
 int deposit(double value); /*tam*/
 int withdraw(double value); /*tam*/
 int transfer(double value); /*tam*/
-void print_statement(user_t * user); /*terry also compression*/
-int delete_user(user_t * user); /*james*/
-int store_users(user_t * user); /*james*/
-int read_users(user_t * users); /*james*/
+void print_statement(users_t * user); /*terry also compression*/
+int delete_user(users_t * user); /*james*/
+int store_users(users_t * user); /*james*/
+int read_users(users_t * users); /*james*/
 
 int validate_user_ID(char user_ID[]); /*james*/
 int validate_user_pw(char user_pw[]); /*walter*/
@@ -88,14 +90,15 @@ int decryption(char string[]); /*seb and walter*/
 *******************************************************************************/
 int main(void)
 {
-    user_t * start = NULL;
-    start = malloc(sizeof(user_t));
+    users_t * start = NULL;
+    start = malloc(sizeof(users_t));
 
     if(start == NULL)
     {
         printf("mem error");
         return -1;
     }
+    strcpy(start->user_lvl,"start");
     start->next = NULL;
 
     /*SETUP OF VARIABLES USED IN THE MAJORITY OF THE CODE*/
@@ -157,7 +160,7 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void login_menu(user_t * user)
+void login_menu(users_t * user)
 {
     char userID[USER_MAX_NUM_LEN + 1];
     char userPW[USER_MAX_PW_LEN + 1];
@@ -181,7 +184,7 @@ void login_menu(user_t * user)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void print_menu(user_t * user)
+void print_menu(users_t * user)
 { 
     
     if(strcmp(user->user_lvl,"admin") == 0)
@@ -192,7 +195,7 @@ void print_menu(user_t * user)
         
 }
 
-void admin_menu(user_t * user)
+void admin_menu(users_t * user)
 {
     int user_input = NULL;
     while(1)
@@ -235,7 +238,7 @@ print_users(user);
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int add_user(user_t * user)
+int add_user(users_t * user)
 {
 
     char user_num[USER_MAX_NUM_LEN + 1];
@@ -258,9 +261,9 @@ int add_user(user_t * user)
     printf("Enter user initial account balance");
     scanf("%lf", &acc_balance);
 
-    user_t * it = user;
+    users_t * it = user;
     
-    if(strcmp(it->user_lvl, "first") == 0)
+    if(strcmp(it->user_lvl, "admin") == 0)
     {
     strcpy(it->user_num, user_num);
     strcpy(it->user_pw, user_pw);
@@ -273,7 +276,7 @@ int add_user(user_t * user)
     {
         it = it->next;
     }
-    it->next = malloc(sizeof(user_t));
+    it->next = malloc(sizeof(users_t));
     /*entering user data into struct*/
     strcpy(it->next->user_num, user_num);
     strcpy(it->next->user_pw, user_pw);
@@ -293,7 +296,7 @@ int add_user(user_t * user)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int edit_user(user_t * user)
+int edit_user(users_t * user)
 {
 return 1;
 }
@@ -307,9 +310,9 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void print_users(user_t * user)
+void print_users(users_t * user)
 {
-    user_t * it = user;
+    users_t * it = user;
 
 while(it != NULL){
 printf("%s\n", it->user_num);
@@ -364,7 +367,7 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void print_statement(user_t * user)
+void print_statement(users_t * user)
 {
 }
 /*******************************************************************************
@@ -376,20 +379,7 @@ void print_statement(user_t * user)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int delete_user(user_t * user)
-{
-return 1;
-}
-/*******************************************************************************
- * Description
- * INPUTS:
- * what is required to input into this function
- * OUTPUTS:
- * what gets returned
- * POST:
- * what happens to pointers and data after the function
-*******************************************************************************/
-int store_users(user_t * user)
+int delete_user(users_t * user)
 {
 return 1;
 }
@@ -402,7 +392,20 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int read_users(user_t * users)
+int store_users(users_t * user)
+{
+return 1;
+}
+/*******************************************************************************
+ * Description
+ * INPUTS:
+ * what is required to input into this function
+ * OUTPUTS:
+ * what gets returned
+ * POST:
+ * what happens to pointers and data after the function
+*******************************************************************************/
+int read_users(users_t * users)
 {
 return 1;
 }
