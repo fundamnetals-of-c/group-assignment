@@ -53,8 +53,13 @@ typedef struct users
     struct users * next;
 } users_t;
 
- 
-
+typedef struct logged_user
+{ 
+    char user_num[USER_MAX_NUM_LEN + 1];
+    char user_pw[USER_MAX_PW_LEN + 1];
+    char user_lvl[USER_MAX_LVL_LEN + 1];
+    double acc_balance;
+}
 /*******************************************************************************
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
