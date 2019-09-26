@@ -65,11 +65,11 @@ typedef struct logged_user
  * define your own functions if required.
 *******************************************************************************/
 int user_login(void); /*tam*/
-void login_menu(users_t * user, logged_user_t logged_user); /*james*/
-void print_menu(users_t * user); /*tam*/
-void dev_menu(users_t * user); /*james*/
-void admin_menu(users_t * user); /*james*/
-void user_menu(users_t * user); /*james*/
+void login_menu(users_t * user, logged_user_t * logged_user); /*james*/
+void print_menu(logged_user_t * user); /*tam*/
+void dev_menu(logged_user_t * user); /*james*/
+void admin_menu(logged_user_t * user); /*james*/
+void user_menu(logged_user_t * user); /*james*/
 
 void print_users(users_t * user);
 
@@ -97,7 +97,8 @@ int decryption(char string[]); /*seb and walter*/
 *******************************************************************************/
 int main(void)
 {
-    logged_user_t logged_user;
+    logged_user_t * logged_user;
+    logged_user = malloc(sizeof(logged_user_t));
 
     users_t * start = NULL;
     start = malloc(sizeof(users_t));
@@ -115,11 +116,11 @@ int main(void)
     
     login_menu(start, logged_user);
 
-printf("your user name is: %s\n", start->user_num);
-printf("your password is: %s\n", start->user_pw);
-printf("your user level is: %s\n", start->user_lvl);
+printf("your user name is: %s\n", logged_user->user_num);
+printf("your password is: %s\n", logged_user->user_pw);
+printf("your user level is: %s\n", logged_user->user_lvl);
 
-    print_menu(start);
+    print_menu(logged_user);
     
     return 0;
 }
@@ -169,18 +170,18 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void login_menu(users_t * user, logged_user_t logged_user)
+void login_menu(users_t * user, logged_user_t * logged_user)
 {
     char userID[USER_MAX_NUM_LEN + 1];
     char userPW[USER_MAX_PW_LEN + 1];
     printf("please enter a user name: ");
     scanf("%s", userID);
-    strcpy(user->user_num,userID);
+    strcpy(logged_user->user_num,userID);
     /*validate user ID*/
     printf("please enter your password: ");
     scanf("%s", userPW);
-    strcpy(user->user_pw,userPW);
-    strcpy(user->user_lvl,"test");
+    strcpy(logged_user->user_pw,userPW);
+    strcpy(logged_user->user_lvl,"test");
     /*check against database*/
 }
 
@@ -193,7 +194,7 @@ void login_menu(users_t * user, logged_user_t logged_user)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void print_menu(users_t * user)
+void print_menu(logged_user_t * user)
 { 
     if(strcmp(user->user_lvl,"test") == 0)
     {
@@ -209,14 +210,26 @@ void print_menu(users_t * user)
     }
     else
     {
-        printf("unable to match user level with a valid user level");
+        printf("unable to match user level with a valid user level\n");
     }
 
         
 }
 
-void dev_menu(users_t * user)
+void dev_menu(logged_user_t * user)
 {
+
+    users_t * start = NULL;
+    start = malloc(sizeof(users_t));
+
+    if(start == NULL)
+    {
+        printf("mem error");
+        return;
+    }
+    strcpy(start->user_lvl,"start");
+    start->next = NULL;
+
     int user_input = NULL;
     while(1)
     {
@@ -237,8 +250,8 @@ void dev_menu(users_t * user)
         {
             case 1 :
                     printf("add user\n");
-                    add_user(user);
-print_users(user);
+                    add_user(start);
+print_users(start);
                     break;
             case 2 :
                     printf("remove user\n");
@@ -268,8 +281,19 @@ print_users(user);
     }
 }
 
-void admin_menu(users_t * user)
+void admin_menu(logged_user_t * user)
 {
+    users_t * start = NULL;
+    start = malloc(sizeof(users_t));
+
+    if(start == NULL)
+    {
+        printf("mem error");
+        return ;
+    }
+    strcpy(start->user_lvl,"start");
+    start->next = NULL;
+
     int user_input = NULL;
     while(1)
     {
@@ -284,8 +308,8 @@ void admin_menu(users_t * user)
         {
             case 1 :
                     printf("add user\n");
-                    add_user(user);
-print_users(user);
+                    add_user(start);
+print_users(start);
                     break;
             case 2 :
                     printf("remove user\n");
@@ -303,7 +327,7 @@ print_users(user);
     }
 }
 
-void user_menu(users_t * user)
+void user_menu(logged_user_t * user)
 {
     int user_input;
     while(1)
