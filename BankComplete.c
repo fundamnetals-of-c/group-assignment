@@ -67,6 +67,7 @@ typedef struct logged_user
 int user_login(void); /*tam*/
 void login_menu(users_t * user, logged_user_t logged_user); /*james*/
 void print_menu(users_t * user); /*tam*/
+void dev_menu(users_t * user); /*james*/
 void admin_menu(users_t * user); /*james*/
 void user_menu(users_t * user); /*james*/
 
@@ -196,7 +197,7 @@ void print_menu(users_t * user)
 { 
     if(strcmp(user->user_lvl,"test") == 0)
     {
-        user_menu(user);
+        dev_menu(user);
     }
     else if(strcmp(user->user_lvl,"admin") == 0)
     {
@@ -212,6 +213,59 @@ void print_menu(users_t * user)
     }
 
         
+}
+
+void dev_menu(users_t * user)
+{
+    int user_input = NULL;
+    while(1)
+    {
+        printf("\n"
+        "admin options:\n"
+        "1. add user\n"
+        "2. remove user\n"
+        "3. view user statement\n"
+        "user options:\n"
+        "4. view balance\n"
+        "5. withdraw funds\n"
+        "6. deposit funds\n"
+        "7. transfer funds\n"
+        "8. log out\n");
+    
+        scanf("%d", &user_input);
+        switch(user_input)
+        {
+            case 1 :
+                    printf("add user\n");
+                    add_user(user);
+print_users(user);
+                    break;
+            case 2 :
+                    printf("remove user\n");
+                    break;
+            case 3 :
+                    printf("view a users statement\n");
+                    break;
+            case 4 :
+                    printf("view balance\n");
+                    break;
+            case 5 :
+                    printf("withdraw funds\n");
+                    break;
+            case 6 :
+                    printf("deposit funds\n");
+                    break;
+            case 7 :
+                    printf("transfer funds\n");
+                    break;
+            case 8 :
+                    printf("logging out\n");
+                    return;
+            default:
+                    printf("Invalid input\n");
+                    break;
+        }
+    }
 }
 
 void admin_menu(users_t * user)
