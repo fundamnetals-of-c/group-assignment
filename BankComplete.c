@@ -243,7 +243,10 @@ void dev_menu(logged_user_t * user)
         "5. withdraw funds\n"
         "6. deposit funds\n"
         "7. transfer funds\n"
-        "8. log out\n");
+        "8. chnage password\n"
+        "dev options:\n"
+        "9. view all user account numbers\n"
+        "10. log out\n");
     
         scanf("%d", &user_input);
         switch(user_input)
@@ -255,6 +258,7 @@ print_users(start);
                     break;
             case 2 :
                     printf("remove user\n");
+                    delete_user(start);
                     break;
             case 3 :
                     printf("view a users statement\n");
@@ -272,6 +276,12 @@ print_users(start);
                     printf("transfer funds\n");
                     break;
             case 8 :
+                    printf("change password\n");
+                    return;
+            case 9 :
+                    printf("view all account numbers\n");
+                    return;
+            case 10:
                     printf("logging out\n");
                     return;
             default:
@@ -515,6 +525,28 @@ void print_statement(users_t * user)
 *******************************************************************************/
 int delete_user(users_t * user)
 {
+    
+    char user_num[USER_MAX_NUM_LEN];
+    printf("what is the user account number you would like to delete: ");
+    scanf("%s", user_num);
+
+    users_t * temp = NULL;
+    users_t * it = user;
+    
+    while(it->next != NULL)
+    {
+        if(strcmp(it->next->user_num, user_num) == 0)
+        {
+            printf("hit %s\n", it->user_num);
+            temp = it->next;
+            it->next = temp->next;
+        }
+        else
+{
+printf("miss %s\n", it->user_num);
+}
+it = it->next;
+    }
 return 1;
 }
 /*******************************************************************************
