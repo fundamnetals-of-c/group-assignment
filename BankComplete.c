@@ -59,15 +59,16 @@ typedef struct logged_user
     char user_pw[USER_MAX_PW_LEN + 1];
     char user_lvl[USER_MAX_LVL_LEN + 1];
     double acc_balance;
-}
+}logged_user_t;
 /*******************************************************************************
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
 *******************************************************************************/
 int user_login(void); /*tam*/
-void login_menu(users_t * user);
+void login_menu(users_t * user, logged_user_t logged_user); /*james*/
 void print_menu(users_t * user); /*tam*/
-void admin_menu(users_t * user);
+void admin_menu(users_t * user); /*james*/
+void user_menu(users_t * user); /*james*/
 
 void print_users(users_t * user);
 
@@ -95,6 +96,8 @@ int decryption(char string[]); /*seb and walter*/
 *******************************************************************************/
 int main(void)
 {
+    logged_user_t logged_user;
+
     users_t * start = NULL;
     start = malloc(sizeof(users_t));
 
@@ -109,7 +112,7 @@ int main(void)
     /*SETUP OF VARIABLES USED IN THE MAJORITY OF THE CODE*/
     
     
-    login_menu(start);
+    login_menu(start, logged_user);
 
 printf("your user name is: %s\n", start->user_num);
 printf("your password is: %s\n", start->user_pw);
@@ -165,7 +168,7 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void login_menu(users_t * user)
+void login_menu(users_t * user, logged_user_t logged_user)
 {
     char userID[USER_MAX_NUM_LEN + 1];
     char userPW[USER_MAX_PW_LEN + 1];
@@ -176,7 +179,7 @@ void login_menu(users_t * user)
     printf("please enter your password: ");
     scanf("%s", userPW);
     strcpy(user->user_pw,userPW);
-    strcpy(user->user_lvl,"admin");
+    strcpy(user->user_lvl,"test");
     /*check against database*/
 }
 
@@ -191,10 +194,21 @@ void login_menu(users_t * user)
 *******************************************************************************/
 void print_menu(users_t * user)
 { 
-    
-    if(strcmp(user->user_lvl,"admin") == 0)
+    if(strcmp(user->user_lvl,"test") == 0)
+    {
+        user_menu(user);
+    }
+    else if(strcmp(user->user_lvl,"admin") == 0)
     {
         admin_menu(user);
+    }
+    else if(strcmp(user->user_lvl,"user") == 0)
+    {
+        user_menu(user);
+    }
+    else
+    {
+        printf("unable to match user level with a valid user level");
     }
 
         
@@ -226,6 +240,43 @@ print_users(user);
                     printf("view a users statement\n");
                     break;
             case 4 :
+                    printf("logging out\n");
+                    return;
+            default:
+                    printf("Invalid input\n");
+                    break;
+        }
+    }
+}
+
+void user_menu(users_t * user)
+{
+    int user_input;
+    while(1)
+    {
+        printf("\n"
+        "1. view balance\n"
+        "2. withdraw funds\n"
+        "3. deposit funds\n"
+        "4. transfer funds\n"
+        "5. log out\n");
+    
+        scanf("%d", &user_input);
+        switch(user_input)
+        {
+            case 1 :
+                    printf("view balance\n");
+                    break;
+            case 2 :
+                    printf("withdraw funds\n");
+                    break;
+            case 3 :
+                    printf("deposit funds\n");
+                    break;
+            case 4 :
+                    printf("transfer funds\n");
+                    break;
+            case 5 :
                     printf("logging out\n");
                     return;
             default:
@@ -268,7 +319,7 @@ int add_user(users_t * user)
 
     users_t * it = user;
     
-    if(strcmp(it->user_lvl, "admin") == 0)
+    if(strcmp(it->user_lvl, "test") == 0)
     {
     strcpy(it->user_num, user_num);
     strcpy(it->user_pw, user_pw);
