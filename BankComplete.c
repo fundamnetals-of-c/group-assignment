@@ -180,29 +180,43 @@ void login_menu(users_t * user, logged_user_t * logged_user)
     /*validate user ID*/
     printf("please enter your password: ");
     scanf("%s", userPW);
-
-    /*cheack against database*/
+/*check against database*/
+logged_user_t logger;
 FILE *fptr = NULL;
-fptr = fopen("td.txt", "w");
-if(fptr == NULL)
+fptr = fopen("td.txt","r");
+fread(&logger, sizeof(logged_user_t), 1, fptr);
+printf("%s : %s\n", logger.user_num, userID);
+if(strcmp(logger.user_num, userID) != 0)
 {
-printf("error when openning data base");
-return;
+/*go to next*/
+printf("go to next");
 }
+else if(strcmp(logger.user_pw, userPW) == 0)
+{
+printf("correct password\n");
+}
+
 
 
     strcpy(logged_user->user_pw,userPW);
     strcpy(logged_user->user_lvl,"test");
     /*check against database*/
+FILE *fptr1 = NULL;
+fptr1 = fopen("td.txt", "w");
+if(fptr1 == NULL)
+{
+printf("error when openning data base");
+return;
+}
 logged_user_t logged_user_test = {"james", "walsh", "admin", 12};
-fwrite(&logged_user_test, sizeof(logged_user_t), 1, fptr);
-fclose(fptr);
+fwrite(&logged_user_test, sizeof(logged_user_t), 1, fptr1);
+fclose(fptr1);
 
-logged_user_t logger;
+logged_user_t logger1;
 FILE *fptr2 = NULL;
 fptr2 = fopen("td.txt","r");
-fread(&logger, sizeof(logged_user_t), 1, fptr2);
-printf("%s",logger.user_num);
+fread(&logger1, sizeof(logged_user_t), 1, fptr2);
+printf("%s",logger1.user_num);
 fclose(fptr2);
 }
 
