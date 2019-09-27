@@ -180,9 +180,30 @@ void login_menu(users_t * user, logged_user_t * logged_user)
     /*validate user ID*/
     printf("please enter your password: ");
     scanf("%s", userPW);
+
+    /*cheack against database*/
+FILE *fptr = NULL;
+fptr = fopen("td.txt", "w");
+if(fptr == NULL)
+{
+printf("error when openning data base");
+return;
+}
+
+
     strcpy(logged_user->user_pw,userPW);
     strcpy(logged_user->user_lvl,"test");
     /*check against database*/
+logged_user_t logged_user_test = {"james", "walsh", "admin", 12};
+fwrite(&logged_user_test, sizeof(logged_user_t), 1, fptr);
+fclose(fptr);
+
+logged_user_t logger;
+FILE *fptr2 = NULL;
+fptr2 = fopen("td.txt","r");
+fread(&logger, sizeof(logged_user_t), 1, fptr2);
+printf("%s",logger.user_num);
+fclose(fptr2);
 }
 
 /*******************************************************************************
@@ -525,7 +546,8 @@ void print_statement(users_t * user)
 *******************************************************************************/
 int delete_user(users_t * user)
 {
-    
+    /*needs to account for first and last pos, first can be done within an quick it->user check before falling into the while
+end can be done by checking next next and if next next is NULL just leave it*/
     char user_num[USER_MAX_NUM_LEN];
     printf("what is the user account number you would like to delete: ");
     scanf("%s", user_num);
