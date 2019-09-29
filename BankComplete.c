@@ -88,8 +88,8 @@ int validate_user_pw(char user_pw[]); /*walter*/
 void validate_sq(); /*seb*/
 int validate_withdraw(/*fill*/); /*tam*/
 
-int encryption(char string[]); /*seb and walter*/
-int decryption(char string[]); /*seb and walter*/
+int encryption(int key, char string[]); /*seb and walter*/
+void decryption(int key, char string[]); /*seb and walter*/
 /*to be extended*/
 
 /*******************************************************************************
@@ -684,9 +684,30 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int encryption(char string[])
+int encryption(int key, char string[])
 {
-return 1;
+    int i;
+    if (key != 0)
+    {
+        for (i=0; (i<100 && string[i] != '\0'); i++)
+        {
+        /*j is the key, preferably a number.*/
+        string[i] = string[i] + key;        
+        }
+        printf("Encryption Successful: %s\n", string);
+    }
+    else
+    {
+        key = 3;  
+        for (i=0; (i<100 && string[i] != '\0'); i++)
+        {
+        /*j is the key, preferably a number.*/
+        string[i] = string[i] + key;        
+        }
+        printf("Encryption Successful: %s\n", string);
+    }
+    /*Returns Key to be saved*/
+    return key;
 }
 /*******************************************************************************
  * Description
@@ -697,7 +718,14 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int decryption(char string[])
+void decryption(int key, char string[])
 {
-return 1;
+    int i;
+    for (i=0; (i<100 && string[i] != '\0'); i++)
+    {
+        /*j is the key, preferably a number.*/
+        string[i] = string[i] - key;        
+    }
+    /*String is Decrypted*/
+    printf("Decryption Successful: %s\n", string);
 }
