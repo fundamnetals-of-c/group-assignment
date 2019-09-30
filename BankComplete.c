@@ -256,6 +256,7 @@ void dev_menu(logged_user_t * user)
 
     users_t * start = NULL;
     start = malloc(sizeof(users_t));
+char poop[8] = "string";
 
     if(start == NULL)
     {
@@ -281,7 +282,9 @@ void dev_menu(logged_user_t * user)
         "8. chnage password\n"
         "dev options:\n"
         "9. view all user account numbers\n"
-        "10. log out\n");
+        "10. log out\n"
+	"11. Encrypt\n"
+	"12. Decrypt\n");
     
         scanf("%d", &user_input);
         switch(user_input)
@@ -319,6 +322,14 @@ print_users(start);
             case 10:
                     printf("logging out\n");
                     return;
+	    case 11: 
+                    printf("Encrypt; Key, String:\n");
+		    encryption(1, poop);
+                    break;
+	    case 12:
+                    printf("Decrypt; Key, String:\n");
+		    decryption(1, poop);
+                    break;
             default:
                     printf("Invalid input\n");
                     break;
@@ -765,7 +776,6 @@ void decryption(int key, char string[])
     int i;
     for (i=0; (i<100 && string[i] != '\0'); i++)
     {
-        /*j is the key, preferably a number.*/
         string[i] = string[i] - key;        
     }
     /*String is Decrypted*/
