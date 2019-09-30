@@ -36,7 +36,8 @@
 #define USER_MAX_NUM_LEN 6
 #define USER_MAX_PW_LEN 32
 #define USER_MAX_LVL_LEN 5
-
+#define SQ_MAX_LEN 30
+#define ANSWER_MAX_LEN 10
 
 /*******************************************************************************
  * List structs - you may define struct date_time and struct flight only. Each
@@ -60,6 +61,16 @@ typedef struct logged_user
     char user_lvl[USER_MAX_LVL_LEN + 1];
     double acc_balance;
 }logged_user_t;
+
+typedef struct user_security_questions
+{
+	char sq1[SQ_MAX_LEN];
+	char ans1[ANSWER_MAX_LEN];
+	char sq2[SQ_MAX_LEN];
+	char ans2[ANSWER_MAX_LEN];
+	char sq3[SQ_MAX_LEN];
+	char ans3[ANSWER_MAX_LEN];
+}user_security_question_t;
 /*******************************************************************************
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
@@ -85,6 +96,7 @@ int read_users(users_t * users); /*james*/
 
 int validate_user_ID(char user_ID[]); /*james*/
 int validate_user_pw(char user_pw[]); /*walter*/
+void create_sq(); /*seb*/
 void validate_sq(); /*seb*/
 int validate_withdraw(/*fill*/); /*tam*/
 
@@ -690,6 +702,25 @@ int validate_user_pw(char user_pw[])
 {
 return 1;
 }
+
+void create_sq() { /*still need to find a proper way to code the function*/
+ 	user_security_questions_t user;
+	printf("Choose 3 security questions:\n");
+	printf("Question 1 : ");
+	scanf("%s", userSq.sq1);
+	printf("Answer 1 : ");
+	scanf("%s", userSq.ans1);
+	printf("Question 2 : ");
+	scanf("%s", userSq.sq2);
+	printf("Answer 2 : ");
+	scanf("%s", userSq.ans2);
+	printf("Question 3 : ");
+	scanf("%s", userSq.sq3);
+	printf("Answer 3 : ");
+	scanf("%s", userSq.ans3);
+	/*questions and answers should be stored in the text files*/
+}
+
 /*******************************************************************************
  * Description
  * INPUTS:
