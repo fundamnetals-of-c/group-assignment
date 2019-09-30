@@ -507,8 +507,23 @@ it = it->next;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
+
 int deposit(double value)
 {
+
+
+double principal;
+double deposit;
+double new;
+
+/*need to initialise principal amount --> comes from admin*/
+    printf("Enter amount to be deposited");
+    scanf("%lf", &deposit);
+
+    new = principal + deposit;
+
+    printf(" The total amount is: %lf", new);
+
 return 1;
 }
 /*******************************************************************************
@@ -522,8 +537,24 @@ return 1;
 *******************************************************************************/
 int withdraw(double value)
 {
+
+double principal;
+double withdraw;
+double new;
+
+/*need to initialise principal amount --> comes from admin*/
+    printf("Enter amount to be withdrawn\n");
+    scanf("%lf",&withdraw);
+
+    new = principal - withdraw;
+
+    if (withdraw > principal);
+        printf("Cannot withdraw that amount of money, Enter a lower amount");
+    printf("The total amount is: %lf", new);
+
 return 1;
 }
+
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -535,6 +566,17 @@ return 1;
 *******************************************************************************/
 int transfer(double value)
 {
+
+double transfer
+double principal
+double 
+
+printf("Enter the account number you want to transfer to");
+printf("Enter the amoount you want to transfer");
+scanf("%lf", &transfer);
+
+
+
 return 1;
 }
 /*******************************************************************************
