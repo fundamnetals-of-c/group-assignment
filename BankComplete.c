@@ -533,20 +533,20 @@ it = it->next;
 
 int deposit(double value)
 {
-
+/*
 
 double principal;
 double deposit;
 double new;
-
+*/
 /*need to initialise principal amount --> comes from admin*/
-    printf("Enter amount to be deposited");
+  /*  printf("Enter amount to be deposited");
     scanf("%lf", &deposit);
 
     new = principal + deposit;
 
     printf(" The total amount is: %lf", new);
-
+*/
 return 1;
 }
 /*******************************************************************************
@@ -560,13 +560,13 @@ return 1;
 *******************************************************************************/
 int withdraw(double value)
 {
-
+/*
 double principal;
 double withdraw;
 double new;
-
+*/
 /*need to initialise principal amount --> comes from admin*/
-    printf("Enter amount to be withdrawn\n");
+  /*  printf("Enter amount to be withdrawn\n");
     scanf("%lf",&withdraw);
 
     new = principal - withdraw;
@@ -574,7 +574,7 @@ double new;
     if (withdraw > principal);
         printf("Cannot withdraw that amount of money, Enter a lower amount");
     printf("The total amount is: %lf", new);
-
+*/
 return 1;
 }
 
@@ -589,14 +589,13 @@ return 1;
 *******************************************************************************/
 int transfer(double value)
 {
-
+/*
 double transfer
 double principal
-double 
 
 printf("Enter the account number you want to transfer to");
 printf("Enter the amoount you want to transfer");
-scanf("%lf", &transfer);
+scanf("%lf", &transfer);*/
 
 
 
@@ -704,7 +703,7 @@ return 1;
 }
 
 void create_sq() { /*still need to find a proper way to code the function*/
- 	user_security_questions_t user;
+ 	/*user_security_questions_t user;
 	printf("Choose 3 security questions:\n");
 	printf("Question 1 : ");
 	scanf("%s", userSq.sq1);
@@ -717,7 +716,7 @@ void create_sq() { /*still need to find a proper way to code the function*/
 	printf("Question 3 : ");
 	scanf("%s", userSq.sq3);
 	printf("Answer 3 : ");
-	scanf("%s", userSq.ans3);
+	scanf("%s", userSq.ans3);*/
 	/*questions and answers should be stored in the text files*/
 }
 
