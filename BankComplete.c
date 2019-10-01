@@ -76,7 +76,7 @@ typedef struct user_security_questions
  * define your own functions if required.
 *******************************************************************************/
 int user_login(void); /*tam*/
-void login_menu(users_t * user, logged_user_t * logged_user); /*james*/
+int login_menu(logged_user_t * logged_user); /*james*/
 void print_menu(logged_user_t * user); /*tam*/
 void dev_menu(logged_user_t * user); /*james*/
 void admin_menu(logged_user_t * user); /*james*/
@@ -126,7 +126,7 @@ int main(void)
     /*SETUP OF VARIABLES USED IN THE MAJORITY OF THE CODE*/
     
     
-    login_menu(start, logged_user);
+    while(login_menu(logged_user) != 1)
 
 printf("your user name is: %s\n", logged_user->user_num);
 printf("your password is: %s\n", logged_user->user_pw);
@@ -182,54 +182,50 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void login_menu(users_t * user, logged_user_t * logged_user)
+int login_menu(logged_user_t * logged_user)
 {
     char userID[USER_MAX_NUM_LEN + 1];
     char userPW[USER_MAX_PW_LEN + 1];
     printf("please enter a user name: ");
     scanf("%s", userID);
-    strcpy(logged_user->user_num,userID);
+
     /*validate user ID*/
     printf("please enter your password: ");
     scanf("%s", userPW);
+
+/*place into struct*/
+    strcpy(logged_user->user_num,userID);
+    strcpy(logged_user->user_pw,userPW);
+    strcpy(logged_user->user_lvl,"test");
 /*check against database*/
 logged_user_t logger;
 FILE *fptr = NULL;
-fptr = fopen("td.txt","r");
-fread(&logger, sizeof(logged_user_t), 1, fptr);
-printf("%s : %s\n", logger.user_num, userID);
-if(strcmp(logger.user_num, userID) != 0)
+fptr = fopen("users.txt","r");
+
+if(fptr == NULL)
 {
-/*go to next*/
-printf("go to next");
+printf("mem error file location doesnt exsist");
 }
-else if(strcmp(logger.user_pw, userPW) == 0)
+/*sort through file until found*/
+
+while(fptr != NULL)
 {
-printf("correct password\n");
+if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
+{
+printf("incorrect ID or password\n");
+return -1;
 }
+/*debugging*/
+/*printf("%s : %s\n", logger.user_num, userID);*/
 
-
-
-    strcpy(logged_user->user_pw,userPW);
-    strcpy(logged_user->user_lvl,"test");
+if(strcmp(logger.user_pw, userPW) == 0)
+{
+printf("Welcome\n");
+return 1;
+}
+    }
     /*check against database*/
-FILE *fptr1 = NULL;
-fptr1 = fopen("td.txt", "w");
-if(fptr1 == NULL)
-{
-printf("error when openning data base");
-return;
-}
-logged_user_t logged_user_test = {"james", "walsh", "admin", 12};
-fwrite(&logged_user_test, sizeof(logged_user_t), 1, fptr1);
-fclose(fptr1);
-
-logged_user_t logger1;
-FILE *fptr2 = NULL;
-fptr2 = fopen("td.txt","r");
-fread(&logger1, sizeof(logged_user_t), 1, fptr2);
-printf("%s",logger1.user_num);
-fclose(fptr2);
+return -1;
 }
 
 /*******************************************************************************
@@ -442,7 +438,6 @@ void user_menu(logged_user_t * user)
 *******************************************************************************/
 int add_user(users_t * user)
 {
-
     char user_num[USER_MAX_NUM_LEN + 1];
     char user_pw[USER_MAX_PW_LEN + 1];
     char user_lvl[USER_MAX_LVL_LEN + 1];
@@ -467,25 +462,27 @@ int add_user(users_t * user)
     
     if(strcmp(it->user_lvl, "test") == 0)
     {
-    strcpy(it->user_num, user_num);
-    strcpy(it->user_pw, user_pw);
-    strcpy(it->user_lvl, user_lvl);
-    it->acc_balance = acc_balance;
-        }
+        strcpy(it->user_num, user_num);
+        strcpy(it->user_pw, user_pw);
+        strcpy(it->user_lvl, user_lvl);
+        it->acc_balance = acc_balance;
+        store_users(it);
+    }
     else
     {
         while(it->next != NULL)
-    {
-        it = it->next;
+        {
+            it = it->next;
+        }
+        it->next = malloc(sizeof(users_t));
+        /*entering user data into struct*/
+        strcpy(it->next->user_num, user_num);
+        strcpy(it->next->user_pw, user_pw);
+        strcpy(it->next->user_lvl, user_lvl);
+        it->next->acc_balance = acc_balance;
+        it->next->next = NULL;
+        store_users(it->next);
     }
-    it->next = malloc(sizeof(users_t));
-    /*entering user data into struct*/
-    strcpy(it->next->user_num, user_num);
-    strcpy(it->next->user_pw, user_pw);
-    strcpy(it->next->user_lvl, user_lvl);
-    it->next->acc_balance = acc_balance;
-    it->next->next = NULL;
-}
     
     return 1;
 }
@@ -660,6 +657,21 @@ return 1;
 *******************************************************************************/
 int store_users(users_t * user)
 {
+FILE *fptr = NULL;
+fptr = fopen("users.txt", "a");
+if(fptr == NULL)
+{
+printf("error when openning data base");
+return -1;
+}
+logged_user_t write_user;
+strcpy(write_user.user_num, user->user_num);
+strcpy(write_user.user_pw, user->user_pw);
+strcpy(write_user.user_lvl, user->user_lvl);
+write_user.acc_balance = user->acc_balance;
+/*logged_user_t logged_user_test = {user->user_num, user->user_pw, user->user_lvl, user->acc_balance};*/
+fwrite(&write_user, sizeof(logged_user_t), 1, fptr);
+fclose(fptr);
 return 1;
 }
 /*******************************************************************************
