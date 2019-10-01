@@ -70,7 +70,7 @@ typedef struct user_security_questions
 	char ans2[ANSWER_MAX_LEN];
 	char sq3[SQ_MAX_LEN];
 	char ans3[ANSWER_MAX_LEN];
-}user_security_question_t;
+}user_security_questions_t;
 /*******************************************************************************
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
@@ -714,21 +714,35 @@ int validate_user_pw(char user_pw[])
 return 1;
 }
 
-void create_sq() { /*still need to find a proper way to code the function*/
- 	/*user_security_questions_t user;
+void create_sq() { 
+ 	user_security_questions_t userSq;
+ 	char sq[SQ_MAX_LEN];
+	char ans[ANSWER_MAX_LEN];
+	int NumberSq = 1;
 	printf("Choose 3 security questions:\n");
-	printf("Question 1 : ");
-	scanf("%s", userSq.sq1);
-	printf("Answer 1 : ");
-	scanf("%s", userSq.ans1);
-	printf("Question 2 : ");
-	scanf("%s", userSq.sq2);
-	printf("Answer 2 : ");
-	scanf("%s", userSq.ans2);
-	printf("Question 3 : ");
-	scanf("%s", userSq.sq3);
-	printf("Answer 3 : ");
-	scanf("%s", userSq.ans3);*/
+	while(NumberSq < 4 ) {
+		printf("Question %d : ", NumberSq);
+		scanf("%s", sq);
+		printf("Answer %d : ", NumberSq);
+		scanf("%s",ans);
+		switch(NumberSq) {
+			case 1 :
+				strcpy(userSq.sq1, sq);
+				strcpy(userSq.ans1, ans);
+				break;
+			case 2 :
+				strcpy(userSq.sq2, sq);
+				strcpy(userSq.ans2, ans);
+				break;
+			case 3 :
+				strcpy(userSq.sq3, sq);
+				strcpy(userSq.ans3, ans);
+				break;
+			default:
+				break;	
+		}
+		NumberSq++;
+	}
 	/*questions and answers should be stored in the text files*/
 }
 
@@ -742,7 +756,7 @@ void create_sq() { /*still need to find a proper way to code the function*/
  * what happens to pointers and data after the function
 *******************************************************************************/
 void validate_sq() {
-	char answer[124];
+	char answer[ANSWER_MAX_LEN];
 	int good_Answer = 0;
 	/*FILE* fp = fopen(filename,"r");*/
 	while(good_Answer < 3) {
