@@ -75,17 +75,18 @@ typedef struct user_security_questions
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
 *******************************************************************************/
-int user_login(void); /*tam*/
 int login_menu(logged_user_t * logged_user); /*james*/
-void print_menu(logged_user_t * user); /*tam*/
+void print_menu(logged_user_t * user); /*james*/
 void dev_menu(logged_user_t * user); /*james*/
 void admin_menu(logged_user_t * user); /*james*/
 void user_menu(logged_user_t * user); /*james*/
+
 
 void print_users(users_t * user);
 
 int add_user(users_t * user); /*james*/
 int edit_user(users_t * user); /*james*/
+double get_balance(logged_user_t * user); /*james*/
 int deposit(double value); /*tam*/
 int withdraw(double value); /*tam*/
 int transfer(double value); /*tam*/
@@ -146,42 +147,6 @@ printf("your user level is: %s\n", logged_user->user_lvl);
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int user_login(void)
-{
-return 1;
-/*
-	int i;
-	char user[30], pass[30], perm[30];
-	FILE *ftpr = NULL;
-	ftpr = fopen("login.txt", "r");
-	
-	printf("Username: ");
-	scanf("%s", user);
-	printf("Password: ");
-	scanf("%s", pass);
-
-	
-	for (i = 0; fptr == NULL; i++) {
-		fscan(fptr, "%s", user_ID);
-		validate_user_ID(user_ID);
-		strcomp with username in file
-		Do the same for pass
-	}
-
-	fscan(fptr, "%s", perm);
-	return user.perm;
-*/
-}
-
-/*******************************************************************************
- * Description
- * INPUTS:
- * what is required to input into this function
- * OUTPUTS:
- * what gets returned
- * POST:
- * what happens to pointers and data after the function
-*******************************************************************************/
 int login_menu(logged_user_t * logged_user)
 {
     char userID[USER_MAX_NUM_LEN + 1];
@@ -196,7 +161,6 @@ int login_menu(logged_user_t * logged_user)
 /*place into struct*/
     strcpy(logged_user->user_num,userID);
     strcpy(logged_user->user_pw,userPW);
-    strcpy(logged_user->user_lvl,"test");
 /*check against database*/
 logged_user_t logger;
 FILE *fptr = NULL;
@@ -220,7 +184,10 @@ return -1;
 
 if(strcmp(logger.user_pw, userPW) == 0)
 {
+strcpy(logged_user->user_lvl,"test");
+    logged_user->acc_balance = logger.acc_balance;
 printf("Welcome\n");
+fclose(fptr);
 return 1;
 }
     }
@@ -311,6 +278,7 @@ print_users(start);
                     break;
             case 4 :
                     printf("view balance\n");
+                    printf("your balance is: $%.2lf\n", get_balance(user));
                     break;
             case 5 :
                     printf("withdraw funds\n");
@@ -326,6 +294,7 @@ print_users(start);
                     return;
             case 9 :
                     printf("view all account numbers\n");
+print_users(start);
                     return;
             case 10:
                     printf("logging out\n");
@@ -517,6 +486,11 @@ while(it != NULL){
 printf("%s\n", it->user_num);
 it = it->next;
 }
+}
+
+double get_balance(logged_user_t * user)
+{
+return user->acc_balance;
 }
 /*******************************************************************************
  * Description
