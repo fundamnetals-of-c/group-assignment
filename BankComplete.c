@@ -25,8 +25,9 @@
  * task can be achieved with stdio.h and string.h only.
 *******************************************************************************/
 #include <stdio.h> /*scanf printf fscanf fprintf fflush fopen fclose*/
-#include <string.h> /*strlen strcmp strcpy*/
+#include <string.h> /*strlen strcmp strcpy strcat*/
 #include <stdlib.h> 
+#include <time.h> /*time localtime*/
 
 /*******************************************************************************
  * List preprocessing directives - DEFINES
@@ -64,13 +65,30 @@ typedef struct logged_user
 
 typedef struct user_security_questions
 {
-	char sq1[SQ_MAX_LEN];
-	char ans1[ANSWER_MAX_LEN];
-	char sq2[SQ_MAX_LEN];
-	char ans2[ANSWER_MAX_LEN];
-	char sq3[SQ_MAX_LEN];
-	char ans3[ANSWER_MAX_LEN];
+    char sq1[SQ_MAX_LEN];
+    char ans1[ANSWER_MAX_LEN];
+    char sq2[SQ_MAX_LEN];
+    char ans2[ANSWER_MAX_LEN];
+    char sq3[SQ_MAX_LEN];
+    char ans3[ANSWER_MAX_LEN];
 }user_security_questions_t;
+
+typedef struct date_time
+{
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+} date_time_t;
+
+typedef struct transaction_details
+{
+    date_time_t trans_dt;
+    double principal;
+    double trans_val;
+    double acc_balance;
+} transaction_details_t;
 /*******************************************************************************
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
@@ -87,9 +105,11 @@ void print_users(users_t * user);
 int add_user(users_t * user); /*james*/
 int edit_user(users_t * user); /*james*/
 double get_balance(logged_user_t * user); /*james*/
-int deposit(double value); /*tam*/
-int withdraw(double value); /*tam*/
-int transfer(double value); /*tam*/
+int deposit(logged_user_t * user, double value); /*tam*/
+int withdraw(logged_user_t * user, double value); /*tam*/
+int transfer(logged_user_t * user, 
+                char target_acc[USER_MAX_NUM_LEN],
+                double value); /*tam*/
 void print_statement(users_t * user); /*terry also compression*/
 int delete_user(users_t * user); /*james*/
 int store_users(users_t * user); /*james*/
@@ -285,6 +305,7 @@ print_users(start);
                     break;
             case 6 :
                     printf("deposit funds\n");
+deposit(user, 23);
                     break;
             case 7 :
                     printf("transfer funds\n");
@@ -490,7 +511,7 @@ it = it->next;
 
 double get_balance(logged_user_t * user)
 {
-return user->acc_balance;
+    return user->acc_balance;
 }
 /*******************************************************************************
  * Description
@@ -502,7 +523,7 @@ return user->acc_balance;
  * what happens to pointers and data after the function
 *******************************************************************************/
 
-int deposit(double value)
+int deposit(logged_user_t * user, double value)
 {
 /*
 
@@ -518,6 +539,45 @@ double new;
 
     printf(" The total amount is: %lf", new);
 */
+/*setting up the structs to fill date time and transaction information*/
+date_time_t dt;
+transaction_details_t transaction_details;    
+
+time_t rawtime;
+    struct tm * timeinfo;
+
+    time ( &rawtime );
+    timeinfo = localtime ( &rawtime );
+
+printf("[%d %d %d %d:%d:%d]\n",timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+dt.year = timeinfo->tm_year + 1900;
+dt.month = timeinfo->tm_mon + 1;
+dt.day = timeinfo->tm_mday;
+dt.minute = timeinfo->tm_min;
+
+transaction_details.trans_dt = dt;
+transaction_details.principal = 12;
+transaction_details.trans_val = 15;
+transaction_details.acc_balance = transaction_details.principal + transaction_details.trans_val;
+
+FILE *fptr = NULL;
+char file_name[USER_MAX_NUM_LEN + 5];
+strcpy(file_name, user->user_num);
+strcat(file_name, ".txt");
+fptr = fopen(file_name, "a");
+if(fptr == NULL)
+{
+printf("error when openning data base");
+return -1;
+}
+logged_user_t write_user;
+strcpy(write_user.user_num, user->user_num);
+strcpy(write_user.user_pw, user->user_pw);
+strcpy(write_user.user_lvl, user->user_lvl);
+write_user.acc_balance = user->acc_balance;
+
+fwrite(&write_user, sizeof(logged_user_t), 1, fptr);
+fclose(fptr);
 return 1;
 }
 /*******************************************************************************
@@ -529,7 +589,7 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int withdraw(double value)
+int withdraw(logged_user_t * user, double value)
 {
 /*
 double principal;
@@ -558,7 +618,7 @@ return 1;
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int transfer(double value)
+int transfer(logged_user_t * user, char target_acc[], double value)
 {
 /*
 double transfer
@@ -643,7 +703,7 @@ strcpy(write_user.user_num, user->user_num);
 strcpy(write_user.user_pw, user->user_pw);
 strcpy(write_user.user_lvl, user->user_lvl);
 write_user.acc_balance = user->acc_balance;
-/*logged_user_t logged_user_test = {user->user_num, user->user_pw, user->user_lvl, user->acc_balance};*/
+
 fwrite(&write_user, sizeof(logged_user_t), 1, fptr);
 fclose(fptr);
 return 1;
