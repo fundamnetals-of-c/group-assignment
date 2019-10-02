@@ -570,13 +570,8 @@ if(fptr == NULL)
 printf("error when openning data base");
 return -1;
 }
-logged_user_t write_user;
-strcpy(write_user.user_num, user->user_num);
-strcpy(write_user.user_pw, user->user_pw);
-strcpy(write_user.user_lvl, user->user_lvl);
-write_user.acc_balance = user->acc_balance;
 
-fwrite(&write_user, sizeof(logged_user_t), 1, fptr);
+fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
 fclose(fptr);
 return 1;
 }
