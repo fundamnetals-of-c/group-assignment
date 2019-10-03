@@ -85,6 +85,7 @@ typedef struct date_time
 typedef struct transaction_details
 {
     date_time_t trans_dt;
+    char type[8+1];
     double principal;
     double trans_val;
     double acc_balance;
@@ -540,41 +541,46 @@ double new;
     printf(" The total amount is: %lf", new);
 */
 /*setting up the structs to fill date time and transaction information*/
-date_time_t dt;
-transaction_details_t transaction_details;    
+    date_time_t dt;
+    transaction_details_t transaction_details;    
 
-time_t rawtime;
+    time_t rawtime;
     struct tm * timeinfo;
 
     time ( &rawtime );
     timeinfo = localtime ( &rawtime );
 
-printf("[%d %d %d %d:%d:%d]\n",timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
-dt.year = timeinfo->tm_year + 1900;
-dt.month = timeinfo->tm_mon + 1;
-dt.day = timeinfo->tm_mday;
-dt.minute = timeinfo->tm_min;
+    dt.year = timeinfo->tm_year + 1900;
+    dt.month = timeinfo->tm_mon + 1;
+    dt.day = timeinfo->tm_mday;
+    dt.minute = timeinfo->tm_min;
 
-transaction_details.trans_dt = dt;
-transaction_details.principal = 12;
-transaction_details.trans_val = 15;
-transaction_details.acc_balance = transaction_details.principal + transaction_details.trans_val;
+    transaction_details.trans_dt = dt;
+    strcpy(transaction_details.type, "deposit");
+    transaction_details.principal = user->acc_balance;
+    transaction_details.trans_val = value;
+    transaction_details.acc_balance = 
+        transaction_details.principal + transaction_details.trans_val;
 
-FILE *fptr = NULL;
-char file_name[USER_MAX_NUM_LEN + 5];
-strcpy(file_name, user->user_num);
-strcat(file_name, ".txt");
-fptr = fopen(file_name, "a");
-if(fptr == NULL)
-{
-printf("error when openning data base");
-return -1;
+    user->acc_balance = transaction_details.acc_balance;
+
+    FILE *fptr = NULL;
+    char file_name[USER_MAX_NUM_LEN + 5];
+    strcpy(file_name, user->user_num);
+    strcat(file_name, ".txt");
+    fptr = fopen(file_name, "a");
+
+    if(fptr == NULL)
+    {
+        printf("error when openning data base");
+        return -1;
+    }
+
+    fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
+    fclose(fptr);
+    return 1;
 }
 
-fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
-fclose(fptr);
-return 1;
-}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -601,7 +607,56 @@ double new;
         printf("Cannot withdraw that amount of money, Enter a lower amount");
     printf("The total amount is: %lf", new);
 */
-return 1;
+    date_time_t dt;
+    transaction_details_t transaction_details;    
+
+    time_t rawtime;
+    struct tm * timeinfo;
+
+    time ( &rawtime );
+    timeinfo = localtime ( &rawtime );
+
+    dt.year = timeinfo->tm_year + 1900;
+    dt.month = timeinfo->tm_mon + 1;
+    dt.day = timeinfo->tm_mday;
+    dt.minute = timeinfo->tm_min;
+
+    if(user->acc_balance < value)
+    {
+        printf("error: not enough funds within account");
+        transaction_details.trans_dt = dt;
+        strcpy(transaction_details.type, "low fund");
+        transaction_details.principal = user->acc_balance;
+        transaction_details.trans_val = -1 * value;
+        transaction_details.acc_balance = user->acc_balance;
+    }
+    else
+    {
+        transaction_details.trans_dt = dt;
+        strcpy(transaction_details.type, "withdraw");
+        transaction_details.principal = user->acc_balance;
+        transaction_details.trans_val = value;
+        transaction_details.acc_balance = 
+            transaction_details.principal - transaction_details.trans_val;
+
+    }
+    user->acc_balance = transaction_details.acc_balance;
+    
+    FILE *fptr = NULL;
+    char file_name[USER_MAX_NUM_LEN + 5];
+    strcpy(file_name, user->user_num);
+    strcat(file_name, ".txt");
+    fptr = fopen(file_name, "a");
+
+    if(fptr == NULL)
+    {
+        printf("error when openning data base");
+        return -1;
+    }
+
+    fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
+    fclose(fptr);
+    return user->acc_balance;
 }
 
 /*******************************************************************************
