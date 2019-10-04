@@ -85,7 +85,7 @@ typedef struct date_time
 typedef struct transaction_details
 {
     date_time_t trans_dt;
-    char type[8+1];
+    char type[11+1];
     double principal;
     double trans_val;
     double acc_balance;
@@ -183,37 +183,33 @@ int login_menu(logged_user_t * logged_user)
     strcpy(logged_user->user_num,userID);
     strcpy(logged_user->user_pw,userPW);
 /*check against database*/
-logged_user_t logger;
-FILE *fptr = NULL;
-fptr = fopen("users.txt","r");
+    logged_user_t logger;
+    FILE *fptr = NULL;
+    fptr = fopen("users.txt","r");
 
-if(fptr == NULL)
-{
-printf("mem error file location doesnt exsist");
-}
-/*sort through file until found*/
-
-while(fptr != NULL)
-{
-if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
-{
-printf("incorrect ID or password\n");
-return -1;
-}
-/*debugging*/
-/*printf("%s : %s\n", logger.user_num, userID);*/
-
-if(strcmp(logger.user_pw, userPW) == 0)
-{
-strcpy(logged_user->user_lvl,"test");
-    logged_user->acc_balance = logger.acc_balance;
-printf("Welcome\n");
-fclose(fptr);
-return 1;
-}
+    if(fptr == NULL)
+    {
+        printf("mem error file location doesnt exsist");
     }
-    /*check against database*/
-return -1;
+    /*sort through file until found*/
+
+    while(fptr != NULL)
+    {
+        if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
+        {
+            printf("incorrect ID or password\n");
+            return -1;
+        }
+        if(strcmp(logger.user_pw, userPW) == 0)
+        {
+            strcpy(logged_user->user_lvl,"test");
+            logged_user->acc_balance = logger.acc_balance;
+            printf("Welcome\n");
+            fclose(fptr);
+            return 1;
+        }
+    }
+    return -1;
 }
 
 /*******************************************************************************
@@ -670,15 +666,64 @@ double new;
 *******************************************************************************/
 int transfer(logged_user_t * user, char target_acc[], double value)
 {
-/*
-double transfer
-double principal
+    date_time_t dt;
+    transaction_details_t transaction_details; 
+    logged_user_t logger;   
 
-printf("Enter the account number you want to transfer to");
-printf("Enter the amoount you want to transfer");
-scanf("%lf", &transfer);*/
+    time_t rawtime;
+    struct tm * timeinfo;
 
+    time ( &rawtime );
+    timeinfo = localtime ( &rawtime );
 
+    dt.year = timeinfo->tm_year + 1900;
+    dt.month = timeinfo->tm_mon + 1;
+    dt.day = timeinfo->tm_mday;
+    dt.minute = timeinfo->tm_min;
+
+    FILE *fptr = NULL;
+    fptr = fopen("users.txt","r");
+
+    if(fptr == NULL)
+    {
+        printf("mem error file location doesnt exsist");
+    }
+
+    while(fptr != NULL)
+    {
+        if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
+        {
+            printf("Invalid account ID\n");
+            return -1;
+        }
+        if(strcmp(logger.user_num, target_acc) == 0)
+        {
+            fclose(fptr);
+            break;
+        }
+    }
+    /*fill payee transaction details*/
+    /*dont fill and respond with low fund if there isnt enough funds*/
+    if(user->acc_balance < value)
+    {
+        printf("error: not enough funds within account");
+        transaction_details.trans_dt = dt;
+        strcpy(transaction_details.type, "low funds");
+        transaction_details.principal = user->acc_balance;
+        transaction_details.trans_val = -1 * value;
+        transaction_details.acc_balance = user->acc_balance;
+    }
+    else
+    {
+        transaction_details.trans_dt = dt;
+        strcpy(transaction_details.type, "transaction out");
+        transaction_details.principal = user->acc_balance;
+        transaction_details.trans_val = -1 * value;
+        transaction_details.acc_balance = 
+            transaction_details.principal - transaction_details.trans_val;
+
+    }
+    user->acc_balance = transaction_details.acc_balance;
 
 return 1;
 }
