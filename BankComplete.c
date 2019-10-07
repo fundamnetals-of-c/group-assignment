@@ -95,7 +95,8 @@ typedef struct transactions
 {
     transaction_details trans_detail;
     struct transactions * next ;
-}
+} transactions_t;
+
 /*******************************************************************************
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
