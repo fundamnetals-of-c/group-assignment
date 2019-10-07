@@ -276,7 +276,8 @@ char poop[8] = "string";
         "9. view all user account numbers\n"
         "10. log out\n"
 	"11. Encrypt\n"
-	"12. Decrypt\n");
+	"12. Decrypt\n"
+    "13. Validate PW\n");
     
         scanf("%d", &user_input);
         switch(user_input)
@@ -324,6 +325,11 @@ print_users(start);
 	    case 12:
                     printf("Decrypt; Key, String:\n");
 		    decryption(1, poop);
+                    break;
+                case 13:
+                    printf("Validate PW, String:\n");
+                    scanf("%s", poop);
+		            validate_user_pw(poop);
                     break;
             default:
                     printf("Invalid input\n");
@@ -832,15 +838,43 @@ return 1;
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is required to input into this function
+ * Takes user_pw[], which is an assumed string.
  * OUTPUTS:
- * what gets returned
+ * Returns the number of characters in that string, -1 if the password is invalid.
  * POST:
- * what happens to pointers and data after the function
+ * what happens to pointers and data after the function, I dunno.
 *******************************************************************************/
 int validate_user_pw(char user_pw[])
 {
-return 1;
+    int i, upper = 0, lower = 0, digit = 0, special = 0;
+    if (user_pw == NULL || strlen(user_pw) == 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < strlen(user_pw); i++) {
+        /*printf("%d\n", user_pw[i]);*/
+        if (user_pw[i] >= 'a' && user_pw[i] <= 'z'){
+            lower++;
+        }
+        if (user_pw[i] >= 'A' && user_pw[i] <= 'Z'){
+            upper++;
+        }
+        if (user_pw[i] >= '0' && user_pw[i] <= '9'){
+            digit++;
+        }
+        if (user_pw[i] >= 33 && user_pw[i] <= 47){
+            special++;
+        }
+        if (user_pw[i] >= 58 && user_pw[i] <= 64){
+            special++;
+        }
+        
+    }
+    if ((lower + upper + digit + special) != strlen(user_pw)){
+        printf("Please use at least 1 of Lower & Upper Case, Number and special characters\n");
+        return -1;
+    }
+    return (lower + upper + digit + special);
 }
 
 void create_sq() { 
