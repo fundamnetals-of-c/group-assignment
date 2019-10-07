@@ -280,6 +280,7 @@ char poop[8] = "string";
     "13. Validate PW\n");
     
         scanf("%d", &user_input);
+read_users(start);
         switch(user_input)
         {
             case 1 :
@@ -594,21 +595,6 @@ double new;
 *******************************************************************************/
 int withdraw(logged_user_t * user, double value)
 {
-/*
-double principal;
-double withdraw;
-double new;
-*/
-/*need to initialise principal amount --> comes from admin*/
-  /*  printf("Enter amount to be withdrawn\n");
-    scanf("%lf",&withdraw);
-
-    new = principal - withdraw;
-
-    if (withdraw > principal);
-        printf("Cannot withdraw that amount of money, Enter a lower amount");
-    printf("The total amount is: %lf", new);
-*/
     date_time_t dt;
     transaction_details_t transaction_details;    
 
@@ -792,22 +778,22 @@ return 1;
 *******************************************************************************/
 int store_users(users_t * user)
 {
-FILE *fptr = NULL;
-fptr = fopen("users.txt", "a");
-if(fptr == NULL)
-{
-printf("error when openning data base");
-return -1;
-}
-logged_user_t write_user;
-strcpy(write_user.user_num, user->user_num);
-strcpy(write_user.user_pw, user->user_pw);
-strcpy(write_user.user_lvl, user->user_lvl);
-write_user.acc_balance = user->acc_balance;
+    FILE *fptr = NULL;
+    fptr = fopen("users.txt", "a");
+    if(fptr == NULL)
+    {
+        printf("error when openning data base");
+        return -1;
+    }
+    logged_user_t write_user;
+    strcpy(write_user.user_num, user->user_num);
+    strcpy(write_user.user_pw, user->user_pw);
+    strcpy(write_user.user_lvl, user->user_lvl);
+    write_user.acc_balance = user->acc_balance;
 
-fwrite(&write_user, sizeof(logged_user_t), 1, fptr);
-fclose(fptr);
-return 1;
+    fwrite(&write_user, sizeof(logged_user_t), 1, fptr);
+    fclose(fptr);
+    return 1;
 }
 /*******************************************************************************
  * Description
@@ -820,6 +806,46 @@ return 1;
 *******************************************************************************/
 int read_users(users_t * users)
 {
+    logged_user_t logged_user;
+    users_t * it = users;
+    FILE *fptr = NULL;
+    fptr = fopen("users.txt","r");
+
+    if(fptr == NULL)
+    {
+        printf("mem error file location doesnt exsist");
+    }
+    /*sort through file until found*/
+
+    while(fptr != NULL)
+    {
+        if(fread(&logged_user, sizeof(logged_user_t), 1, fptr) == 0)
+        {
+            return -1;
+        }
+        if(strcmp(users->user_lvl,"start") == 0)
+        {
+            /*local store first user*/
+            strcpy(users->user_num,logged_user.user_num);
+            strcpy(users->user_pw,logged_user.user_pw);
+            strcpy(users->user_lvl,logged_user.user_lvl);
+            users->acc_balance = logged_user.acc_balance;
+            users->next = NULL;
+        }
+        else
+        {
+            while(it->next != NULL)
+            {
+                it = it->next;
+            }
+            it->next = malloc(sizeof(users_t));
+            strcpy(it->next->user_num,logged_user.user_num);
+            strcpy(it->next->user_pw,logged_user.user_pw);
+            strcpy(it->next->user_lvl,logged_user.user_lvl);
+            it->next->acc_balance = logged_user.acc_balance;
+            it->next->next = NULL;
+        }
+    }
 return 1;
 }
 /*******************************************************************************
