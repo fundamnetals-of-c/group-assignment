@@ -90,6 +90,12 @@ typedef struct transaction_details
     double trans_val;
     double acc_balance;
 } transaction_details_t;
+
+typedef struct transactions
+{
+    transaction_details trans_detail;
+    struct transactions * next ;
+}
 /*******************************************************************************
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
