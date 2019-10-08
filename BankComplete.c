@@ -93,7 +93,7 @@ typedef struct transaction_details
 
 typedef struct transactions
 {
-    transaction_details trans_detail;
+    transaction_details_t trans_detail;
     struct transactions * next ;
 } transactions_t;
 
