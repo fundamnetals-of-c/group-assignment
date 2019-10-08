@@ -160,6 +160,7 @@ int main(void)
 printf("your user name is: %s\n", logged_user->user_num);
 printf("your password is: %s\n", logged_user->user_pw);
 printf("your user level is: %s\n", logged_user->user_lvl);
+printf("your user bal is: %lf\n", logged_user->acc_balance);
 
     print_menu(logged_user);
     
@@ -207,9 +208,13 @@ int login_menu(logged_user_t * logged_user)
             printf("incorrect ID or password\n");
             return -1;
         }
-        if(strcmp(logger.user_pw, userPW) == 0)
+printf("%s : %s\n", logger.user_pw, userPW);
+printf("%s : %s\n", logger.user_num, userID);
+        if(strcmp(logger.user_pw, userPW) == 0 && 
+            strcmp(logger.user_num, userID) == 0)
         {
             strcpy(logged_user->user_lvl,"test");
+/*strcpy(logged_user->user_lvl, logger.user_lvl);*/
             logged_user->acc_balance = logger.acc_balance;
             printf("Welcome\n");
             fclose(fptr);
@@ -321,6 +326,7 @@ deposit(user, val);
                     break;
             case 7 :
                     printf("transfer funds\n");
+transfer(user, "25",1.50);
                     break;
             case 8 :
                     printf("change password\n");
@@ -400,7 +406,7 @@ print_users(start);
 
 void user_menu(logged_user_t * user)
 {
-    int user_input -1;
+    int user_input = -1;
     while(1)
     {
         printf("\n"
@@ -542,21 +548,6 @@ double get_balance(logged_user_t * user)
 
 int deposit(logged_user_t * user, double value)
 {
-/*
-
-double principal;
-double deposit;
-double new;
-*/
-/*need to initialise principal amount --> comes from admin*/
-  /*  printf("Enter amount to be deposited");
-    scanf("%lf", &deposit);
-
-    new = principal + deposit;
-
-    printf(" The total amount is: %lf", new);
-*/
-/*setting up the structs to fill date time and transaction information*/
     date_time_t dt;
     transaction_details_t transaction_details;    
 
@@ -699,6 +690,7 @@ int transfer(logged_user_t * user, char target_acc[], double value)
         if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
         {
             printf("Invalid account ID\n");
+            fclose(fptr);
             return -1;
         }
         if(strcmp(logger.user_num, target_acc) == 0)
@@ -726,9 +718,34 @@ int transfer(logged_user_t * user, char target_acc[], double value)
         transaction_details.trans_val = -1 * value;
         transaction_details.acc_balance = 
             transaction_details.principal - transaction_details.trans_val;
-
     }
     user->acc_balance = transaction_details.acc_balance;
+    /*create linked lists to rewrite*/
+    users_t * start = NULL;
+    start = malloc(sizeof(users_t));
+
+    if(start == NULL)
+    {
+        printf("mem error");
+        return -1;
+    }
+    strcpy(start->user_lvl,"start");
+    start->next = NULL;
+
+    read_users(start);
+    
+    /*obtain and write data*/ 
+    users_t * it = start;
+
+    while(it != NULL)
+    {
+        if(strcmp(it->user_num, target_acc) == 0)
+        {
+            break;
+        }
+        it = it->next;
+    }
+    printf("target user: %s bal: %lf",it->user_num, it->acc_balance);    
 
 return 1;
 }
