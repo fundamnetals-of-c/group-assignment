@@ -265,6 +265,7 @@ char poop[8] = "string";
     strcpy(start->user_lvl,"start");
     start->next = NULL;
 
+    double val;
     int user_input = -1;
     while(1)
     {
@@ -308,10 +309,15 @@ print_users(start);
                     break;
             case 5 :
                     printf("withdraw funds\n");
+printf("Please enter how much you wish to withdraw: ");
+scanf("%lf", &val);
+withdraw(user, val);
                     break;
             case 6 :
                     printf("deposit funds\n");
-deposit(user, 23);
+printf("Please enter how much you wish to deposit: ");
+scanf("%lf", &val);
+deposit(user, val);
                     break;
             case 7 :
                     printf("transfer funds\n");
@@ -394,7 +400,7 @@ print_users(start);
 
 void user_menu(logged_user_t * user)
 {
-    int user_input;
+    int user_input -1;
     while(1)
     {
         printf("\n"
@@ -741,11 +747,11 @@ void print_statement(users_t * user)
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is required to input into this function
+ * users_t*
  * OUTPUTS:
- * what gets returned
+ * int num of deleted users 
  * POST:
- * what happens to pointers and data after the function
+ * the pointer will contain the same data but without the user that was removed
 *******************************************************************************/
 int delete_user(users_t * user)
 {
