@@ -265,7 +265,7 @@ char poop[8] = "string";
     strcpy(start->user_lvl,"start");
     start->next = NULL;
 
-    int user_input = NULL;
+    int user_input = -1;
     while(1)
     {
         printf("\n"
@@ -359,7 +359,7 @@ void admin_menu(logged_user_t * user)
     strcpy(start->user_lvl,"start");
     start->next = NULL;
 
-    int user_input = NULL;
+    int user_input = -1;
     while(1)
     {
         printf("\n"
