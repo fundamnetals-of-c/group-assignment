@@ -122,6 +122,7 @@ void print_statement(users_t * user); /*terry also compression*/
 int delete_user(users_t * user); /*james*/
 int store_users(users_t * user); /*james*/
 int read_users(users_t * users); /*james*/
+int write_users(users_t * users); /*james*/
 
 int validate_user_ID(char user_ID[]); /*james*/
 int validate_user_pw(char user_pw[]); /*walter*/
@@ -719,7 +720,24 @@ int transfer(logged_user_t * user, char target_acc[], double value)
         transaction_details.acc_balance = 
             transaction_details.principal - transaction_details.trans_val;
     }
+    /*update user account balance*/
     user->acc_balance = transaction_details.acc_balance;
+    /*write to user transaction database*/
+    FILE *fptr = NULL;
+    char file_name[USER_MAX_NUM_LEN + 5];
+    strcpy(file_name, user->user_num);
+    strcat(file_name, ".txt");
+    fptr = fopen(file_name, "a");
+
+    if(fptr == NULL)
+    {
+        printf("error when openning data base");
+        return -1;
+    }
+
+    fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
+    fclose(fptr);
+
     /*create linked lists to rewrite*/
     users_t * start = NULL;
     start = malloc(sizeof(users_t));
@@ -745,9 +763,35 @@ int transfer(logged_user_t * user, char target_acc[], double value)
         }
         it = it->next;
     }
-    printf("target user: %s bal: %lf",it->user_num, it->acc_balance);    
+    printf("target user: %s bal: %lf",it->user_num, it->acc_balance); 
+    transaction_details.trans_dt = dt;
+    strcpy(transaction_details.type, "transaction in");
+    transaction_details.principal = it->acc_balance;
+    transaction_details.trans_val = 1 * value;
+    transaction_details.acc_balance = 
+        transaction_details.principal + transaction_details.trans_val;       
 
-return 1;
+    /*update target user account balance*/
+    it->acc_balance = transaction_details.acc_balance;
+    /*write transaction history on reciever*/
+    fptr = NULL;
+    file_name[USER_MAX_NUM_LEN + 5];
+    strcpy(file_name, it->user_num);
+    strcat(file_name, ".txt");
+    fptr = fopen(file_name, "a");
+
+    if(fptr == NULL)
+    {
+        printf("error when openning data base");
+        return -1;
+    }
+
+    fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
+    fclose(fptr);
+
+    write_users(start);
+
+    return user->acc_balance;
 }
 /*******************************************************************************
  * Description
@@ -878,6 +922,30 @@ int read_users(users_t * users)
     }
 return 1;
 }
+
+int write_users(users_t * users)
+{
+    FILE *fptr = NULL;
+    fptr = fopen("users.txt","w");
+    logged_user_t holder;
+
+    if(fptr == NULL)
+    {
+        printf("mem error: couldn't create user file");
+        return -1;
+    }
+
+    users_t * it = users;
+    while(it->next != NULL)
+    {
+        strcpy(holder.user_num,it->user_num);
+        strcpy(holder.user_pw,it->user_pw);
+        strcpy(holder.user_lvl,it->user_lvl);
+        holder.acc_balance = it->acc_balance;
+    }
+    fclose(fptr);
+return 1;
+}
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -929,11 +997,7 @@ int validate_user_pw(char user_pw[])
     if ((lower + upper + digit + special) != strlen(user_pw)){
         printf("Please use at least 1 of Lower & Upper Case, Number and special characters\n");
         return -1;
-    } else if ((lower < 1) || (upper < 1) || (digit < 1) || (special < 1)) {
-        printf("Please use at least 1 of Lower & Upper Case, Number and special characters\n");
-        return -1;
     }
-    
     return (lower + upper + digit + special);
 }
 
