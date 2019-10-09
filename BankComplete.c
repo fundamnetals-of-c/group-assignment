@@ -723,7 +723,7 @@ int transfer(logged_user_t * user, char target_acc[], double value)
     /*update user account balance*/
     user->acc_balance = transaction_details.acc_balance;
     /*write to user transaction database*/
-    FILE *fptr = NULL;
+    fptr = NULL;
     char file_name[USER_MAX_NUM_LEN + 5];
     strcpy(file_name, user->user_num);
     strcat(file_name, ".txt");
@@ -775,7 +775,6 @@ int transfer(logged_user_t * user, char target_acc[], double value)
     it->acc_balance = transaction_details.acc_balance;
     /*write transaction history on reciever*/
     fptr = NULL;
-    file_name[USER_MAX_NUM_LEN + 5];
     strcpy(file_name, it->user_num);
     strcat(file_name, ".txt");
     fptr = fopen(file_name, "a");
