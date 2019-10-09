@@ -118,7 +118,7 @@ int withdraw(logged_user_t * user, double value); /*tam*/
 int transfer(logged_user_t * user, 
                 char target_acc[USER_MAX_NUM_LEN],
                 double value); /*tam*/
-void print_statement(users_t * user); /*terry also compression*/
+void print_statement(logged_user_t * user); /*terry also compression*/
 int delete_user(users_t * user); /*james*/
 int store_users(users_t * user); /*james*/
 int read_users(users_t * users); /*james*/
@@ -802,8 +802,9 @@ printf("before write");
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void print_statement(users_t * user)
+void print_statement(logged_user_t * user)
 {
+    /*ask for date*/
 }
 /*******************************************************************************
  * Description
