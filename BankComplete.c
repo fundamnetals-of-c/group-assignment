@@ -998,6 +998,10 @@ int validate_user_pw(char user_pw[])
         printf("Please use at least 1 of Lower & Upper Case, Number and special characters\n");
         return -1;
     }
+    else if ((lower < 1) || (upper < 1) || (digit < 1) || (special < 1)) {	
+    printf("Please use at least 1 of Lower & Upper Case, Number and special characters\n");	
+    return -1;
+    }
     return (lower + upper + digit + special);
 }
 
