@@ -156,7 +156,8 @@ int main(void)
     /*SETUP OF VARIABLES USED IN THE MAJORITY OF THE CODE*/
     
     
-    while(login_menu(logged_user) != 1)
+    /*while(login_menu(logged_user) != 1)*/
+strcpy(logged_user->user_lvl,"test");
 
 printf("your user name is: %s\n", logged_user->user_num);
 printf("your password is: %s\n", logged_user->user_pw);
@@ -327,7 +328,7 @@ deposit(user, val);
                     break;
             case 7 :
                     printf("transfer funds\n");
-transfer(user, "25",1.50);
+transfer(user, "25",1);
                     break;
             case 8 :
                     printf("change password\n");
@@ -710,6 +711,7 @@ int transfer(logged_user_t * user, char target_acc[], double value)
         transaction_details.principal = user->acc_balance;
         transaction_details.trans_val = -1 * value;
         transaction_details.acc_balance = user->acc_balance;
+        return user->acc_balance;
     }
     else
     {
@@ -754,7 +756,6 @@ int transfer(logged_user_t * user, char target_acc[], double value)
     
     /*obtain and write data*/ 
     users_t * it = start;
-
     while(it != NULL)
     {
         if(strcmp(it->user_num, target_acc) == 0)
@@ -787,7 +788,7 @@ int transfer(logged_user_t * user, char target_acc[], double value)
 
     fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
     fclose(fptr);
-
+printf("before write");
     write_users(start);
 
     return user->acc_balance;
@@ -935,12 +936,14 @@ int write_users(users_t * users)
     }
 
     users_t * it = users;
-    while(it->next != NULL)
+    while(it != NULL)
     {
         strcpy(holder.user_num,it->user_num);
         strcpy(holder.user_pw,it->user_pw);
         strcpy(holder.user_lvl,it->user_lvl);
         holder.acc_balance = it->acc_balance;
+        fwrite(&holder, sizeof(logged_user_t), 1, fptr);
+        it = it->next;
     }
     fclose(fptr);
 return 1;
