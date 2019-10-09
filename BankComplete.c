@@ -128,7 +128,7 @@ int withdraw(logged_user_t * user, double value); /*tam*/
 int transfer(logged_user_t * user, 
                 char target_acc[USER_MAX_NUM_LEN],
                 double value); /*tam*/
-void print_statement(const char user_acc[USER_MAX_NUM_LEN]); /*terry also compression*/
+int print_statement(const char user_acc[USER_MAX_NUM_LEN]); /*terry*/
 int delete_user(users_t * user); /*james*/
 int store_users(users_t * user); /*james*/
 int read_users(users_t * users); /*james*/
@@ -137,6 +137,7 @@ int write_users(users_t * users); /*james*/
 int validate_user_ID(char user_ID[]); /*james*/
 int validate_user_pw(char user_pw[]); /*walter*/
 void create_sq(); /*seb*/
+int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
 void validate_sq(); /*seb*/
 int validate_withdraw(/*fill*/); /*tam*/
 int validate_date_time(const struct date_time time); /*james*/
@@ -274,6 +275,7 @@ void dev_menu(logged_user_t * user)
     users_t * start = NULL;
     start = malloc(sizeof(users_t));
 char poop[8] = "string";
+char user_acc[10];
 
     if(start == NULL)
     {
@@ -320,6 +322,9 @@ print_users(start);
                     break;
             case 3 :
                     printf("view a users statement\n");
+printf("enter target users");
+scanf("%s", user_acc);
+print_statement(user_acc);
                     break;
             case 4 :
                     printf("view balance\n");
@@ -813,16 +818,18 @@ printf("before write");
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void print_statement(const char user_acc[USER_MAX_NUM_LEN])
+int print_statement(const char user_acc[USER_MAX_NUM_LEN])
 {
     /*ask for date*/
     date_time_t start_dt;
     date_time_t end_dt;
+    transaction_details_t transaction;
     printf("please enter that date you should like to see from:\n");
-    while(validate_date_time(start_dt) == 1)
+    while(validate_date_time(start_dt) == -1)
     {
-        printf("Enter month, date, hour and minute separated by spaces>\n");
-        scanf("%d %d %d %d", 
+        printf("Enter year, month, date, hour and minute separated by spaces>\n");
+        scanf("%d %d %d %d %d", 
+            &start_dt.year,
             &start_dt.month, 
             &start_dt.day, 
             &start_dt.hour, 
@@ -831,13 +838,61 @@ void print_statement(const char user_acc[USER_MAX_NUM_LEN])
     printf("please enter that date you should like to see to:\n");
     while(validate_date_time(end_dt) == 1)
     {
-        printf("Enter month, date, hour and minute separated by spaces>\n");
-        scanf("%d %d %d %d", 
+        printf("Enter year, month, date, hour and minute separated by spaces>\n");
+        scanf("%d %d %d %d %d", 
+            &end_dt.year,
             &end_dt.month, 
             &end_dt.day, 
             &end_dt.hour, 
             &end_dt.minute);
     }
+
+    /*set up file data base pointer*/
+    FILE *fptr = NULL;
+    char file_name[USER_MAX_NUM_LEN + 5];
+    strcpy(file_name, user_acc);
+    strcat(file_name, ".txt");
+    fptr = fopen(file_name, "r");
+
+    if(fptr == NULL)
+    {
+        printf("error when openning data base");
+        return -1;
+    }
+
+    while(fptr != NULL)
+    {
+        if(fread(&transaction, sizeof(transaction_details_t), 1, fptr) == 0)
+        {
+            printf("no transactions found\n");
+            fclose(fptr);
+            return -1;
+        }
+        if(trans_cmp(transaction.trans_dt, start_dt) == 1)
+        {
+printf("found\n");
+}
+printf("trans year: %d\n", transaction.trans_dt.year);
+printf("trans month: %d\n", transaction.trans_dt.month);
+    }
+
+return 0;
+}
+
+int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt)
+{
+    if(trans_dt.year < date_dt.year)
+        return -1;
+    if(trans_dt.month < date_dt.month)
+        return -1;
+    if(trans_dt.day < date_dt.day)
+        return -1;
+    if(trans_dt.hour < date_dt.hour)
+        return -1;
+    if(trans_dt.minute < date_dt.minute)
+        return -1;
+    
+    return 1;
 }
 /*******************************************************************************
  * Description
