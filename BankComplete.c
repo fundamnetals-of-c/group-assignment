@@ -40,6 +40,16 @@
 #define SQ_MAX_LEN 30
 #define ANSWER_MAX_LEN 10
 
+/*defines for testing valid date_time inputs*/
+#define MONTHS_LOWER 1
+#define MONTHS_UPPER 12
+#define DAYS_LOWER 1
+#define DAYS_UPPER 32
+#define HOURS_LOWER 0
+#define HOURS_UPPER 23
+#define MINUTES_LOWER 0
+#define MINUTES_UPPER 60
+
 /*******************************************************************************
  * List structs - you may define struct date_time and struct flight only. Each
  * struct definition should have only the fields mentioned in the assignment
@@ -118,7 +128,7 @@ int withdraw(logged_user_t * user, double value); /*tam*/
 int transfer(logged_user_t * user, 
                 char target_acc[USER_MAX_NUM_LEN],
                 double value); /*tam*/
-void print_statement(logged_user_t * user); /*terry also compression*/
+void print_statement(const char user_acc[USER_MAX_NUM_LEN]); /*terry also compression*/
 int delete_user(users_t * user); /*james*/
 int store_users(users_t * user); /*james*/
 int read_users(users_t * users); /*james*/
@@ -129,6 +139,7 @@ int validate_user_pw(char user_pw[]); /*walter*/
 void create_sq(); /*seb*/
 void validate_sq(); /*seb*/
 int validate_withdraw(/*fill*/); /*tam*/
+int validate_date_time(const struct date_time time); /*james*/
 
 int encryption(int key, char string[]); /*seb and walter*/
 void decryption(int key, char string[]); /*seb and walter*/
@@ -802,9 +813,31 @@ printf("before write");
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void print_statement(logged_user_t * user)
+void print_statement(const char user_acc[USER_MAX_NUM_LEN])
 {
     /*ask for date*/
+    date_time_t start_dt;
+    date_time_t end_dt;
+    printf("please enter that date you should like to see from:\n");
+    while(validate_date_time(start_dt) == 1)
+    {
+        printf("Enter month, date, hour and minute separated by spaces>\n");
+        scanf("%d %d %d %d", 
+            &start_dt.month, 
+            &start_dt.day, 
+            &start_dt.hour, 
+            &start_dt.minute);
+    }
+    printf("please enter that date you should like to see to:\n");
+    while(validate_date_time(end_dt) == 1)
+    {
+        printf("Enter month, date, hour and minute separated by spaces>\n");
+        scanf("%d %d %d %d", 
+            &end_dt.month, 
+            &end_dt.day, 
+            &end_dt.hour, 
+            &end_dt.minute);
+    }
 }
 /*******************************************************************************
  * Description
@@ -1038,6 +1071,24 @@ void create_sq() {
 		NumberSq++;
 	}
 	/*questions and answers should be stored in the text files*/
+}
+
+int validate_date_time(const struct date_time time)
+{
+    /*test all the variable within time date to validate they are logical based
+    on the real world reprsentation of time*/
+    if(time.month < MONTHS_LOWER ||
+    time.month > MONTHS_UPPER ||
+    time.day < DAYS_LOWER ||
+    time.day >= DAYS_UPPER ||
+    time.hour < HOURS_LOWER ||
+    time.hour > HOURS_UPPER ||
+    time.minute < MINUTES_LOWER ||
+    time.minute >= MINUTES_UPPER)
+    {
+        return -1;
+    }
+    return 1;
 }
 
 /*******************************************************************************
