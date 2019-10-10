@@ -629,6 +629,7 @@ int withdraw(logged_user_t * user, double value)
     dt.year = timeinfo->tm_year + 1900;
     dt.month = timeinfo->tm_mon + 1;
     dt.day = timeinfo->tm_mday;
+    dt.hour = timeinfo->tm_hour;
     dt.minute = timeinfo->tm_min;
 
     if(user->acc_balance < value)
@@ -693,6 +694,7 @@ int transfer(logged_user_t * user, char target_acc[], double value)
     dt.year = timeinfo->tm_year + 1900;
     dt.month = timeinfo->tm_mon + 1;
     dt.day = timeinfo->tm_mday;
+    dt.hour = timeinfo->tm_hour;
     dt.minute = timeinfo->tm_min;
 
     FILE *fptr = NULL;
@@ -823,30 +825,42 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
     /*ask for date*/
     date_time_t start_dt;
     date_time_t end_dt;
+    date_time_t dt;
+    int flag = 0;
     transaction_details_t transaction;
-    printf("please enter that date you should like to see from:\n");
-    while(validate_date_time(start_dt) == -1)
+    
+    while(flag == 0)
     {
-        printf("Enter year, month, date, hour and minute separated by spaces>\n");
-        scanf("%d %d %d %d %d", 
-            &start_dt.year,
-            &start_dt.month, 
-            &start_dt.day, 
-            &start_dt.hour, 
-            &start_dt.minute);
+        printf("please enter that date you should like to see from:\n");
+        start_dt = dt;
+        end_dt = dt;
+        while(validate_date_time(start_dt) == -1)
+        {
+            printf("Enter year, month, date, hour and minute separated by spaces>\n");
+            scanf("%d %d %d %d %d", 
+                &start_dt.year,
+                &start_dt.month, 
+                &start_dt.day, 
+                &start_dt.hour, 
+                &start_dt.minute);
+        }
+        printf("please enter that date you should like to see to:\n");
+        while(validate_date_time(end_dt) == -1)
+        {
+            printf("Enter year, month, date, hour and minute separated by spaces>\n");
+            scanf("%d %d %d %d %d", 
+                &end_dt.year,
+                &end_dt.month, 
+                &end_dt.day, 
+                &end_dt.hour, 
+                &end_dt.minute);
+        }
+        if(trans_cmp(start_dt, end_dt) == -1)
+        {
+            flag = 1;
+        }
     }
-    printf("please enter that date you should like to see to:\n");
-    while(validate_date_time(end_dt) == 1)
-    {
-        printf("Enter year, month, date, hour and minute separated by spaces>\n");
-        scanf("%d %d %d %d %d", 
-            &end_dt.year,
-            &end_dt.month, 
-            &end_dt.day, 
-            &end_dt.hour, 
-            &end_dt.minute);
-    }
-
+    
     /*set up file data base pointer*/
     FILE *fptr = NULL;
     char file_name[USER_MAX_NUM_LEN + 5];
@@ -870,10 +884,22 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
         }
         if(trans_cmp(transaction.trans_dt, start_dt) == 1)
         {
-printf("found\n");
-}
+            break;
+        }
+    }
+    while(trans_cmp(end_dt,transaction.trans_dt) == 1)
+    {
+        if(fread(&transaction, sizeof(transaction_details_t), 1, fptr) == 0)
+        {
+            printf("End of statement\n");
+            fclose(fptr);
+            break;
+        }
 printf("trans year: %d\n", transaction.trans_dt.year);
 printf("trans month: %d\n", transaction.trans_dt.month);
+printf("trans day: %d\n", transaction.trans_dt.day);
+printf("trans hour: %d\n", transaction.trans_dt.hour);
+printf("trans minute: %d\n", transaction.trans_dt.minute);
     }
 
 return 0;
@@ -883,13 +909,23 @@ int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt)
 {
     if(trans_dt.year < date_dt.year)
         return -1;
-    if(trans_dt.month < date_dt.month)
+    if(trans_dt.year == date_dt.year &&
+        trans_dt.month < date_dt.month)
         return -1;
-    if(trans_dt.day < date_dt.day)
+    if(trans_dt.year == date_dt.year &&
+        trans_dt.month == date_dt.month &&
+        trans_dt.day < date_dt.day)
         return -1;
-    if(trans_dt.hour < date_dt.hour)
+    if(trans_dt.year == date_dt.year &&
+        trans_dt.month == date_dt.month &&
+        trans_dt.day == date_dt.day &&
+        trans_dt.hour < date_dt.hour)
         return -1;
-    if(trans_dt.minute < date_dt.minute)
+    if(trans_dt.year == date_dt.year &&
+        trans_dt.month == date_dt.month &&
+        trans_dt.day == date_dt.day &&
+        trans_dt.hour == date_dt.hour &&
+        trans_dt.minute < date_dt.minute)
         return -1;
     
     return 1;
