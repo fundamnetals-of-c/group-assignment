@@ -95,7 +95,7 @@ typedef struct date_time
 typedef struct transaction_details
 {
     date_time_t trans_dt;
-    char type[11+1];
+    char type[15+1];
     double principal;
     double trans_val;
     double acc_balance;
@@ -827,8 +827,7 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
     date_time_t end_dt;
     date_time_t dt;
     int flag = 0;
-    transaction_details_t transaction;
-    
+    transaction_details_t transaction;    
     while(flag == 0)
     {
         printf("please enter that date you should like to see from:\n");
@@ -887,6 +886,9 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
             break;
         }
     }
+printf("transaction history:\n");
+printf("transaction       transaction\n");
+printf("date              type            ammount balance\n");
     while(trans_cmp(end_dt,transaction.trans_dt) == 1)
     {
         if(fread(&transaction, sizeof(transaction_details_t), 1, fptr) == 0)
@@ -895,11 +897,14 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
             fclose(fptr);
             break;
         }
-printf("trans year: %d\n", transaction.trans_dt.year);
-printf("trans month: %d\n", transaction.trans_dt.month);
-printf("trans day: %d\n", transaction.trans_dt.day);
-printf("trans hour: %d\n", transaction.trans_dt.hour);
-printf("trans minute: %d\n", transaction.trans_dt.minute);
+printf("%02d/%02d/%04d  %02d:%02d %s $%.2lf $%.2lf\n", transaction.trans_dt.day,
+transaction.trans_dt.month,
+transaction.trans_dt.year,
+transaction.trans_dt.hour,
+transaction.trans_dt.minute,
+transaction.type,
+transaction.trans_val,
+transaction.acc_balance);
     }
 
 return 0;
