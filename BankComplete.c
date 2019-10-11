@@ -128,6 +128,7 @@ int transfer(logged_user_t * user,
                 char target_acc[USER_MAX_NUM_LEN],
                 double value); /*james*/
 int print_statement(const char user_acc[USER_MAX_NUM_LEN]); /*terry*/
+void change_password(); /*james*/
 
 /*admin functions*/
 int add_user(users_t * user); /*james*/
@@ -141,7 +142,6 @@ int validate_user_pw(char user_pw[]); /*walter*/
 void create_sq(); /*seb*/
 int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
 void validate_sq(); /*seb*/
-/* void change_password(); james*/
 int validate_date_time(const struct date_time time); /*james*/
 
 int encryption(int key, char string[]); /*seb and walter*/
@@ -372,26 +372,26 @@ print_statement(user_acc);
                     break;
             case 5 :
                     printf("withdraw funds\n");
-printf("Please enter how much you wish to withdraw: ");
-scanf("%lf", &val);
-withdraw(user, val);
+                    printf("Please enter how much you wish to withdraw:>");
+                    scanf("%lf", &val);
+                    withdraw(user, val);
                     break;
             case 6 :
                     printf("deposit funds\n");
-printf("Please enter how much you wish to deposit: ");
-scanf("%lf", &val);
-deposit(user, val);
+                    printf("Please enter how much you wish to deposit:>");
+                    scanf("%lf", &val);
+                    deposit(user, val);
                     break;
             case 7 :
                     printf("transfer funds\n");
-transfer(user, "25",1);
+                    transfer(user, "25",1);
                     break;
             case 8 :
                     printf("change password\n");
                     return;
             case 9 :
                     printf("view all account numbers\n");
-print_users(start);
+                    print_users(start);
                     return;
             case 10:
                     printf("logging out\n");
@@ -458,7 +458,7 @@ void admin_menu(logged_user_t * user)
             case 1 :
                     printf("add user\n");
                     add_user(start);
-print_users(start);
+                    print_users(start);
                     break;
             case 2 :
                     printf("remove user\n");
@@ -914,19 +914,24 @@ int transfer(logged_user_t * user, char target_acc[], double value)
         return -1;
     }
 
+    /*write transactio details to file*/
     fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
     fclose(fptr);
+
+    /*update all users in the linked list*/
     write_users(start);
     return 1;
 }
 /*******************************************************************************
  * Description
+ * this function will allow the user to print the statement for the user account
+ * between two dates
  * INPUTS:
- * what is required to input into this function
+ * char[USER_MAX_NUM_LEN]
  * OUTPUTS:
- * what gets returned
+ * -1 if invalid, no of statements
  * POST:
- * what happens to pointers and data after the function
+ * array is constant no change
 *******************************************************************************/
 int print_statement(const char user_acc[USER_MAX_NUM_LEN])
 {
@@ -935,12 +940,15 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
     date_time_t end_dt;
     date_time_t dt;
     int flag = 0;
-    transaction_details_t transaction;    
+    transaction_details_t transaction;   
+
+    /*while dates arent valid*/ 
     while(flag == 0)
     {
         printf("Please enter that date you should like to see from:\n");
         start_dt = dt;
         end_dt = dt;
+        /*while start date isnt valid*/
         while(validate_date_time(start_dt) == -1)
         {
             printf("Enter year, month, date, hour and minute ");
@@ -953,6 +961,7 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
                 &start_dt.minute);
         }
         printf("Please enter that date you should like to see to:\n");
+        /*while end date isnt valid*/
         while(validate_date_time(end_dt) == -1)
         {
             printf("Enter year, month, date, hour and minute ");
@@ -964,6 +973,7 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
                 &end_dt.hour, 
                 &end_dt.minute);
         }
+        /*if valid dates change the flag to break the while*/
         if(trans_cmp(start_dt, end_dt) == -1)
         {
             flag = 1;
@@ -1030,6 +1040,17 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
 return 0;
 }
 
+/*******************************************************************************
+ * Description
+ * this function comapre two dates with the early date being on the first 
+ * argument and the later date being on the second argument
+ * INPUTS:
+ * date_time_t, date_time_t
+ * OUTPUTS:
+ * -1 if invalid, 1 if valid
+ * POST:
+ * arrays is constant no change
+*******************************************************************************/
 int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt)
 {
     if(trans_dt.year < date_dt.year)
@@ -1057,6 +1078,7 @@ int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt)
 }
 /*******************************************************************************
  * Description
+ * this function will find and delete a user based on user ID
  * INPUTS:
  * users_t*
  * OUTPUTS:
@@ -1091,6 +1113,7 @@ it = it->next;
     }
 return 1;
 }
+
 /*******************************************************************************
  * Description
  * INPUTS:
