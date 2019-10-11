@@ -58,7 +58,6 @@
 *******************************************************************************/
 typedef struct users
 {
-    /*fill with user data variables*/
     char user_num[USER_MAX_NUM_LEN + 1];
     char user_pw[USER_MAX_PW_LEN + 1];
     char user_lvl[USER_MAX_LVL_LEN + 1];
@@ -112,23 +111,26 @@ typedef struct transactions
  * Function prototypes - do NOT change the given prototypes. However you may
  * define your own functions if required.
 *******************************************************************************/
+/*menus*/
 int login_menu(logged_user_t * logged_user); /*james*/
 void print_menu(logged_user_t * user); /*james*/
 void dev_menu(logged_user_t * user); /*james*/
 void admin_menu(logged_user_t * user); /*james*/
 void user_menu(logged_user_t * user); /*james*/
 
-void print_users(users_t * user);
+void print_users(users_t * user); /*james*/
 
-int add_user(users_t * user); /*james*/
-int edit_user(users_t * user); /*james*/
-double get_balance(logged_user_t * user); /*james*/
+/*user functions*/
+double get_balance(const logged_user_t * user); /*james*/
 int deposit(logged_user_t * user, double value); /*tam*/
 int withdraw(logged_user_t * user, double value); /*tam*/
 int transfer(logged_user_t * user, 
                 char target_acc[USER_MAX_NUM_LEN],
-                double value); /*tam*/
+                double value); /*james*/
 int print_statement(const char user_acc[USER_MAX_NUM_LEN]); /*terry*/
+
+/*admin functions*/
+int add_user(users_t * user); /*james*/
 int delete_user(users_t * user); /*james*/
 int store_users(users_t * user); /*james*/
 int read_users(users_t * users); /*james*/
@@ -518,37 +520,42 @@ void user_menu(logged_user_t * user)
 }
 /*******************************************************************************
  * Description
+ * this function will ask for user information and store it into a linked list
+ * it will then write the user data into a file when finished
+ * this allows the program to store as many users with no end
+ * the function will return the number of members in temp storage
  * INPUTS:
- * what is required to input into this function
+ * users_t
  * OUTPUTS:
- * what gets returned
+ * int 
  * POST:
- * what happens to pointers and data after the function
+ * users_t will be filled with the temp new members
 *******************************************************************************/
 int add_user(users_t * user)
 {
+    /*set up temp variables to store user entry*/
     char user_num[USER_MAX_NUM_LEN + 1];
     char user_pw[USER_MAX_PW_LEN + 1];
     char user_lvl[USER_MAX_LVL_LEN + 1];
     double acc_balance;
-
 
     /*entering user data*/
     printf("Enter user information\n");
     printf("Enter the new user number: \n");
     scanf("%s", user_num);
     /*validate*/
-    printf("Enter the new user password: \n"); /*should this be done upon first sign in?*/
+    printf("Enter the new user password: \n");
     scanf("%s", user_pw);
-/*validate*/
+    /*validate*/
     printf("Enter the user level");
-/*validate*/
+    /*validate*/
     scanf("%s", user_lvl);
     printf("Enter user initial account balance");
     scanf("%lf", &acc_balance);
 
     users_t * it = user;
     
+    /*check if this is the first user*/
     if(strcmp(it->user_lvl, "test") == 0)
     {
         strcpy(it->user_num, user_num);
@@ -571,30 +578,17 @@ int add_user(users_t * user)
         it->next->acc_balance = acc_balance;
         it->next->next = NULL;
         store_users(it->next);
-    }
-    
+    }    
     return 1;
-}
-/*******************************************************************************
- * Description
- * INPUTS:
- * what is required to input into this function
- * OUTPUTS:
- * what gets returned
- * POST:
- * what happens to pointers and data after the function
-*******************************************************************************/
-int edit_user(users_t * user)
-{
-return 1;
 }
 
 /*******************************************************************************
  * Description
+ * this function will print the group of new users
  * INPUTS:
- * what is required to input into this function
+ * users_t
  * OUTPUTS:
- * what gets returned
+ * -nothing
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
@@ -602,31 +596,46 @@ void print_users(users_t * user)
 {
     users_t * it = user;
 
-while(it != NULL){
-printf("%s\n", it->user_num);
-it = it->next;
-}
+    while(it != NULL)
+    {
+        printf("%s\n", it->user_num);
+        it = it->next;
+    }
 }
 
-double get_balance(logged_user_t * user)
+/*******************************************************************************
+ * Description
+ * this function returns the logged in users balance
+ * INPUTS:
+ * logged_user_t
+ * OUTPUTS:
+ * double (user balance)
+ * POST:
+ * pointers stay constant
+*******************************************************************************/
+double get_balance(const logged_user_t * user)
 {
     return user->acc_balance;
 }
+
 /*******************************************************************************
  * Description
+ * this function allows a user to deposit an ammount of money into their account
+ * and adjust the users account balance
  * INPUTS:
- * what is required to input into this function
+ * logged_user_t, double
  * OUTPUTS:
- * what gets returned
+ * -1 is invalid, 1 is valid
  * POST:
- * what happens to pointers and data after the function
+ * logged_user_t is filled with the most up to date account balance
 *******************************************************************************/
-
 int deposit(logged_user_t * user, double value)
 {
+    /*set temp variables*/
     date_time_t dt;
     transaction_details_t transaction_details;    
 
+    /*inport local computer time for transaction history*/
     time_t rawtime;
     struct tm * timeinfo;
 
@@ -638,6 +647,7 @@ int deposit(logged_user_t * user, double value)
     dt.day = timeinfo->tm_mday;
     dt.minute = timeinfo->tm_min;
 
+    /*fill transaction information*/
     transaction_details.trans_dt = dt;
     strcpy(transaction_details.type, "deposit");
     transaction_details.principal = user->acc_balance;
@@ -645,20 +655,24 @@ int deposit(logged_user_t * user, double value)
     transaction_details.acc_balance = 
         transaction_details.principal + transaction_details.trans_val;
 
+    /*update account balance*/
     user->acc_balance = transaction_details.acc_balance;
 
+    /*find file to fill transaction data into*/
     FILE *fptr = NULL;
     char file_name[USER_MAX_NUM_LEN + 5];
     strcpy(file_name, user->user_num);
     strcat(file_name, ".txt");
     fptr = fopen(file_name, "a");
 
+    /*check the data base has no errors*/
     if(fptr == NULL)
     {
         printf("error when openning data base");
         return -1;
     }
 
+    /*write to database*/
     fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
     fclose(fptr);
     return 1;
@@ -666,18 +680,22 @@ int deposit(logged_user_t * user, double value)
 
 /*******************************************************************************
  * Description
+ * this is a user function use to withdraw money from their account and write 
+ * it to their transaction history file
  * INPUTS:
- * what is required to input into this function
+ * logged_user_t, double
  * OUTPUTS:
- * what gets returned
+ * -1 if invalid, 1 is valid
  * POST:
- * what happens to pointers and data after the function
+ * logged_user_t with new balance added
 *******************************************************************************/
 int withdraw(logged_user_t * user, double value)
 {
+    /*set temp variables*/
     date_time_t dt;
     transaction_details_t transaction_details;    
 
+    /*import local computer time for transaction*/
     time_t rawtime;
     struct tm * timeinfo;
 
@@ -690,6 +708,7 @@ int withdraw(logged_user_t * user, double value)
     dt.hour = timeinfo->tm_hour;
     dt.minute = timeinfo->tm_min;
 
+    /*check if user has enough balance to withdraw*/
     if(user->acc_balance < value)
     {
         printf("error: not enough funds within account");
@@ -709,40 +728,49 @@ int withdraw(logged_user_t * user, double value)
             transaction_details.principal - transaction_details.trans_val;
 
     }
+    /*update user account balance*/
     user->acc_balance = transaction_details.acc_balance;
     
+    /*open the file to fill the data base*/
     FILE *fptr = NULL;
     char file_name[USER_MAX_NUM_LEN + 5];
     strcpy(file_name, user->user_num);
     strcat(file_name, ".txt");
     fptr = fopen(file_name, "a");
 
+    /*check the database has no errors opening*/
     if(fptr == NULL)
     {
         printf("error when openning data base");
         return -1;
     }
 
+    /*write transaction to file*/
     fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
     fclose(fptr);
-    return user->acc_balance;
+    return 1;
 }
 
 /*******************************************************************************
  * Description
+ * this function takes the logged in user and will transfer an ammount of money
+ * from their account into the target account and write this transfer on both
+ * users transaction statements
  * INPUTS:
- * what is required to input into this function
+ * logged_user_t, char[], double
  * OUTPUTS:
- * what gets returned
+ * -1 if invalid, 1 if valid
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
 int transfer(logged_user_t * user, char target_acc[], double value)
 {
+    /*set up temp variables*/
     date_time_t dt;
     transaction_details_t transaction_details; 
     logged_user_t logger;   
 
+    /*import local time from computer*/
     time_t rawtime;
     struct tm * timeinfo;
 
@@ -755,6 +783,7 @@ int transfer(logged_user_t * user, char target_acc[], double value)
     dt.hour = timeinfo->tm_hour;
     dt.minute = timeinfo->tm_min;
 
+    /*open file database to check users*/
     FILE *fptr = NULL;
     fptr = fopen("users.txt","r");
 
@@ -763,6 +792,7 @@ int transfer(logged_user_t * user, char target_acc[], double value)
         printf("mem error file location doesnt exsist");
     }
 
+    /*test if account exists*/
     while(fptr != NULL)
     {
         if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
@@ -777,8 +807,7 @@ int transfer(logged_user_t * user, char target_acc[], double value)
             break;
         }
     }
-    /*fill payee transaction details*/
-    /*dont fill and respond with low fund if there isnt enough funds*/
+    /*check if the account has enough to transfer*/
     if(user->acc_balance < value)
     {
         printf("error: not enough funds within account");
@@ -850,6 +879,7 @@ int transfer(logged_user_t * user, char target_acc[], double value)
 
     /*update target user account balance*/
     it->acc_balance = transaction_details.acc_balance;
+
     /*write transaction history on reciever*/
     fptr = NULL;
     strcpy(file_name, it->user_num);
@@ -864,10 +894,8 @@ int transfer(logged_user_t * user, char target_acc[], double value)
 
     fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
     fclose(fptr);
-printf("before write");
     write_users(start);
-
-    return user->acc_balance;
+    return 1;
 }
 /*******************************************************************************
  * Description
