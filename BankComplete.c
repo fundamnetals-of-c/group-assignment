@@ -1281,35 +1281,88 @@ int validate_user_pw(char user_pw[])
 }
 
 void create_sq() { 
- 	user_security_questions_t userSq;
- 	char sq[SQ_MAX_LEN];
-	char ans[ANSWER_MAX_LEN];
-	int NumberSq = 1;
-	printf("Choose 3 security questions:\n");
-	while(NumberSq < 4 ) {
-		printf("Question %d : ", NumberSq);
-		scanf("%s", sq);
-		printf("Answer %d : ", NumberSq);
-		scanf("%s",ans);
-		switch(NumberSq) {
-			case 1 :
-				strcpy(userSq.sq1, sq);
-				strcpy(userSq.ans1, ans);
-				break;
-			case 2 :
-				strcpy(userSq.sq2, sq);
-				strcpy(userSq.ans2, ans);
-				break;
-			case 3 :
-				strcpy(userSq.sq3, sq);
-				strcpy(userSq.ans3, ans);
-				break;
-			default:
-				break;	
-		}
-		NumberSq++;
-	}
-	/*questions and answers should be stored in the text files*/
+    user_security_questions_t userSq;
+    char sq[SQ_MAX_LEN];
+    char ans[ANSWER_MAX_LEN];
+    int NumberSq = 1;
+    int option;
+    int questionNb;
+    printf("1. Choose among a list of security questions\n"
+           "2. Create your own security questions\n"
+           "Choose an option : ");
+    scanf("%d", &option);
+    printf("Choose 3 security questions:\n");
+    if(option == 1) {
+        printf("1. What is you oldest sibling's middle name ?\n"
+               "2. In what city or town did your mother and father meet ?\n"
+               "3. What was the last name of your third grade teacher ?\n"
+               "4. What is your mother's maiden name ?\n"
+               "5. In what city or town was your first job ?\n"
+               "6. What was the name of your elementary school ?\n"
+               "7. In what city or town does your nearest sibling live ?\n"
+               "8. What is your pet's name ?\n");
+    }
+    while(NumberSq < 4 ) {
+        switch(option){
+            case 1:
+                printf("Enter the number corresponding to the question : ");
+                scanf("%d", &questionNb);
+                switch(questionNb){
+                    case 1:
+                        strcpy(sq,"What is you oldest sibling's middle name ?");
+                        break;
+                    case 2:
+                        strcpy(sq,"In what city or town did your mother and father meet ?");
+                        break;
+                    case 3:
+                        strcpy(sq,"What was the last name of your third grade teacher ?");
+                        break;
+                    case 4:
+                        strcpy(sq,"What is your mother's maiden name ?");
+                        break;
+                    case 5:
+                        strcpy(sq,"In what city or town was your first job ?");
+                        break;
+                    case 6:
+                        strcpy(sq,"What was the name of your elementary school ?");
+                        break;
+                    case 7:
+                        strcpy(sq,"In what city or town does your nearest sibling live ?");
+                        break;
+                    case 8:
+                        strcpy(sq,"What is your pet's name ?");
+                        break;
+                }
+                printf("Answer %d : ", NumberSq);
+                scanf("%s",ans);
+                break;    
+            case 2:
+                printf("Question %d : ", NumberSq);
+                scanf("%s", sq);
+                printf("Answer %d : ", NumberSq);
+                scanf("%s",ans);
+                break;
+        }
+        
+        switch(NumberSq) {
+            case 1 :
+                strcpy(userSq.sq1, sq);
+                strcpy(userSq.ans1, ans);
+                break;
+            case 2 :
+                strcpy(userSq.sq2, sq);
+                strcpy(userSq.ans2, ans);
+                break;
+            case 3 :
+                strcpy(userSq.sq3, sq);
+                strcpy(userSq.ans3, ans);
+                break;
+            default:
+                break;	
+        }
+        NumberSq++;
+    }
+    /*questions and answers should be stored in the text files*/
 }
 
 int validate_date_time(const struct date_time time)
