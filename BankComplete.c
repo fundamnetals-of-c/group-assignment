@@ -217,13 +217,15 @@ int login_menu(logged_user_t * logged_user)
     }
 
     /*sort through file until found*/
-    int login_attempt = 0;
+    /*int login_attempt = 0;*/
     while(fptr != NULL)
     {
         /*fill the logger struct with temp data*/
         if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
         {
             printf("incorrect ID or password\n");
+	    validate_sq();
+	    /*
             switch(login_attempt) {
                 case 0:
                     printf("You have two more attempts\n");
@@ -244,7 +246,7 @@ int login_menu(logged_user_t * logged_user)
 
             strcpy(logged_user->user_num,userID);
             strcpy(logged_user->user_pw,userPW);
-            login_attempt++;
+            login_attempt++;*/
         }
         /*check the logger information against user input*/
         if(strcmp(logger.user_pw, userPW) == 0 && 
