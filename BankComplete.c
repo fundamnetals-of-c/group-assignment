@@ -118,7 +118,6 @@ void dev_menu(logged_user_t * user); /*james*/
 void admin_menu(logged_user_t * user); /*james*/
 void user_menu(logged_user_t * user); /*james*/
 
-
 void print_users(users_t * user);
 
 int add_user(users_t * user); /*james*/
@@ -140,19 +139,18 @@ int validate_user_pw(char user_pw[]); /*walter*/
 void create_sq(); /*seb*/
 int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
 void validate_sq(); /*seb*/
-int validate_withdraw(/*fill*/); /*tam*/
 int validate_date_time(const struct date_time time); /*james*/
 
 int encryption(int key, char string[]); /*seb and walter*/
 void decryption(int key, char string[]); /*seb and walter*/
 void format_trans_type(char type[]); /*terry*/
-/*to be extended*/
 
 /*******************************************************************************
  * Main
 *******************************************************************************/
 int main(void)
 {
+    /*SETUP OF VARIABLES USED IN THE MAJORITY OF THE CODE*/
     logged_user_t * logged_user;
     logged_user = malloc(sizeof(logged_user_t));
 
@@ -166,17 +164,9 @@ int main(void)
     }
     strcpy(start->user_lvl,"start");
     start->next = NULL;
-
-    /*SETUP OF VARIABLES USED IN THE MAJORITY OF THE CODE*/
-    
     
     /*while(login_menu(logged_user) != 1)*/
 strcpy(logged_user->user_lvl,"test");
-
-printf("your user name is: %s\n", logged_user->user_num);
-printf("your password is: %s\n", logged_user->user_pw);
-printf("your user level is: %s\n", logged_user->user_lvl);
-printf("your user bal is: %lf\n", logged_user->acc_balance);
 
     print_menu(logged_user);
     
@@ -185,15 +175,21 @@ printf("your user bal is: %lf\n", logged_user->acc_balance);
 
 /*******************************************************************************
  * Description
+ * this function takes a user struct and inputs user data into it.
+ * this function will return a 1 is the input matched the stored data in the 
+ * users.txt file and will return a -1 if it couldn't find the user name or the
+ * password is incorrect for a valid user name
  * INPUTS:
- * what is required to input into this function
+ * logged_user_t
  * OUTPUTS:
- * what gets returned
+ * 1 if valid, -1 if invalid
  * POST:
- * what happens to pointers and data after the function
+ * this function will end with the logged user being filled with local user 
+ * data based on inputs
 *******************************************************************************/
 int login_menu(logged_user_t * logged_user)
 {
+    /*setup user inputs*/
     char userID[USER_MAX_NUM_LEN + 1];
     char userPW[USER_MAX_PW_LEN + 1];
     printf("please enter a user name: ");
@@ -203,10 +199,11 @@ int login_menu(logged_user_t * logged_user)
     printf("please enter your password: ");
     scanf("%s", userPW);
 
-/*place into struct*/
+    /*place into struct*/
     strcpy(logged_user->user_num,userID);
     strcpy(logged_user->user_pw,userPW);
-/*check against database*/
+    
+    /*check against database*/
     logged_user_t logger;
     FILE *fptr = NULL;
     fptr = fopen("users.txt","r");
@@ -215,22 +212,22 @@ int login_menu(logged_user_t * logged_user)
     {
         printf("mem error file location doesnt exsist");
     }
-    /*sort through file until found*/
 
+    /*sort through file until found*/
     while(fptr != NULL)
     {
+        /*fill the logger struct with temp data*/
         if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
         {
             printf("incorrect ID or password\n");
             return -1;
         }
-printf("%s : %s\n", logger.user_pw, userPW);
-printf("%s : %s\n", logger.user_num, userID);
+        /*check the logger information against user input*/
         if(strcmp(logger.user_pw, userPW) == 0 && 
             strcmp(logger.user_num, userID) == 0)
         {
             strcpy(logged_user->user_lvl,"test");
-/*strcpy(logged_user->user_lvl, logger.user_lvl);*/
+            /*strcpy(logged_user->user_lvl, logger.user_lvl);*/
             logged_user->acc_balance = logger.acc_balance;
             printf("Welcome\n");
             fclose(fptr);
@@ -242,12 +239,17 @@ printf("%s : %s\n", logger.user_num, userID);
 
 /*******************************************************************************
  * Description
+ * this function will change the command line display based on the user level 
+ * that belongs to the loggered user function. the logged_user_t will return 
+ * with the lastest user data. cannot be const as it is pass through this 
+ * function into further functions
  * INPUTS:
- * what is required to input into this function
+ * logged_user_t
  * OUTPUTS:
- * what gets returned
+ * - nothing
  * POST:
- * what happens to pointers and data after the function
+ * will be filled with the lasted user data after the user has choosen to log 
+ * out
 *******************************************************************************/
 void print_menu(logged_user_t * user)
 { 
@@ -266,11 +268,23 @@ void print_menu(logged_user_t * user)
     else
     {
         printf("unable to match user level with a valid user level\n");
-    }
-
-        
+    }        
 }
 
+/*******************************************************************************
+ * Description
+ * this is the menu that will be given to the devs, with special functions 
+ * such as choosing the user rather then having it forced into args of some 
+ * functions
+ * this is where devs can choose what function they require
+ * INPUTS:
+ * logged_user_t
+ * OUTPUTS:
+ * -nothing
+ * POST:
+ * will be filled with the lasted user data after the user has choosen to log 
+ * out
+*******************************************************************************/
 void dev_menu(logged_user_t * user)
 {
 
@@ -378,6 +392,20 @@ print_users(start);
     }
 }
 
+/*******************************************************************************
+ * Description
+ * this is the menu that will be given to the admins, with special functions 
+ * such as choosing the user rather then having it forced into args of some 
+ * functions
+ * this is where admins can choose what function they require
+ * INPUTS:
+ * logged_user_t
+ * OUTPUTS:
+ * -nothing
+ * POST:
+ * will be filled with the lasted user data after the user has choosen to log 
+ * out
+*******************************************************************************/
 void admin_menu(logged_user_t * user)
 {
     users_t * start = NULL;
@@ -424,9 +452,25 @@ print_users(start);
     }
 }
 
+/*******************************************************************************
+ * Description
+ * this is the menu that will be given to the users, with all functions having 
+ * args forced into the functions 
+ * functions
+ * this is where users can choose banking actions they need
+ * INPUTS:
+ * logged_user_t
+ * OUTPUTS:
+ * -nothing
+ * POST:
+ * will be filled with the lasted user data after the user has choosen to log 
+ * out
+*******************************************************************************/
 void user_menu(logged_user_t * user)
 {
     int user_input = -1;
+    double val = 0;
+    char user_acc[10];
     while(1)
     {
         printf("\n"
@@ -441,15 +485,27 @@ void user_menu(logged_user_t * user)
         {
             case 1 :
                     printf("view balance\n");
+                    get_balance(user);
                     break;
             case 2 :
                     printf("withdraw funds\n");
+                    printf("how much funds would like to withdraw>");
+                    scanf("%lf", &val);
+                    withdraw(user, val);
                     break;
             case 3 :
                     printf("deposit funds\n");
+                    printf("how much funds would like to deposit>");
+                    scanf("%lf", &val);
+                    withdraw(user, val);
                     break;
             case 4 :
                     printf("transfer funds\n");
+                    printf("what account ID would you like to transfer to>");
+                    scanf("%s", user_acc);
+                    printf("how much funds would like to transfer>");
+                    scanf("%lf", &val);
+                    transfer(user, user_acc, val);
                     break;
             case 5 :
                     printf("logging out\n");
