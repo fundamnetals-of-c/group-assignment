@@ -168,8 +168,8 @@ int main(void)
     strcpy(start->user_lvl,"start");
     start->next = NULL;
     
-    /*while(login_menu(logged_user) != 1)*/
-strcpy(logged_user->user_lvl,"test");
+/*    while(login_menu(logged_user) != 1);*/
+    strcpy(logged_user->user_lvl,"test");
 
     print_menu(logged_user);
     
@@ -1118,12 +1118,13 @@ return 1;
 
 /*******************************************************************************
  * Description
+ * appends new users to the users database file
  * INPUTS:
- * what is required to input into this function
+ * users_t
  * OUTPUTS:
- * what gets returned
+ * -1 if invalid, 1 if successful
  * POST:
- * what happens to pointers and data after the function
+ * nothing chnages within pointer
 *******************************************************************************/
 int store_users(users_t * user)
 {
@@ -1183,10 +1184,13 @@ int read_users(users_t * users)
         }
         else
         {
+            /*search for next empty list*/
             while(it->next != NULL)
             {
                 it = it->next;
             }
+
+            /*local store users*/
             it->next = malloc(sizeof(users_t));
             strcpy(it->next->user_num,logged_user.user_num);
             strcpy(it->next->user_pw,logged_user.user_pw);
@@ -1195,9 +1199,19 @@ int read_users(users_t * users)
             it->next->next = NULL;
         }
     }
-return 1;
+    return 1;
 }
 
+/*******************************************************************************
+ * Description
+ * this function writes a linked list of any size into the users file
+ * INPUTS:
+ * users_t
+ * OUTPUTS:
+ * -1 if invalid, 1 if completed task
+ * POST:
+ * no user data changes
+*******************************************************************************/
 int write_users(users_t * users)
 {
     FILE *fptr = NULL;
@@ -1221,16 +1235,19 @@ int write_users(users_t * users)
         it = it->next;
     }
     fclose(fptr);
-return 1;
+    return 1;
 }
+
 /*******************************************************************************
  * Description
+ * this function will validate that the user ID is within the banks terms, 
+ * no to long and no illegal charaters in any spots
  * INPUTS:
- * what is required to input into this function
+ * char[]
  * OUTPUTS:
- * what gets returned
+ * -1 if invalid, 1 if valid
  * POST:
- * what happens to pointers and data after the function
+ * const array, no change
 *******************************************************************************/
 int validate_user_ID(char user_ID[])
 {
@@ -1282,6 +1299,15 @@ int validate_user_pw(char user_pw[])
     return (lower + upper + digit + special);
 }
 
+/*******************************************************************************
+ * Description
+ * INPUTS:
+ * what is required to input into this function
+ * OUTPUTS:
+ * what gets returned
+ * POST:
+ * what happens to pointers and data after the function
+*******************************************************************************/
 void create_sq() { 
     user_security_questions_t userSq;
     char sq[SQ_MAX_LEN];
@@ -1367,10 +1393,21 @@ void create_sq() {
     /*questions and answers should be stored in the text files*/
 }
 
+/*******************************************************************************
+ * Description
+ * this function validates if the date time function is logical and valid with
+ * the real world representation of time
+ * INPUTS:
+ * date_time_t
+ * OUTPUTS:
+ * -1 if invalid, 1 if valid
+ * POST:
+ * const array no change
+*******************************************************************************/
 int validate_date_time(const struct date_time time)
 {
     /*test all the variable within time date to validate they are logical based
-    on the real world reprsentation of time*/
+    on the real world representation of time*/
     if(time.month < MONTHS_LOWER ||
     time.month > MONTHS_UPPER ||
     time.day < DAYS_LOWER ||
@@ -1409,20 +1446,6 @@ void validate_sq() {
         else { printf("Wrong answer\n"); }
     }
     /*change_password();*/
-}
-
-/*******************************************************************************
- * Description
- * INPUTS:
- * what is required to input into this function
- * OUTPUTS:
- * what gets returned
- * POST:
- * what happens to pointers and data after the function
-*******************************************************************************/
-int validate_withdraw(/*fill*/)
-{
-return 1;
 }
 
 /*******************************************************************************
