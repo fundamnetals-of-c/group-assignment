@@ -39,6 +39,7 @@
 #define USER_MAX_LVL_LEN 5
 #define SQ_MAX_LEN 30
 #define ANSWER_MAX_LEN 10
+#define MAX_TYPE_LEN 15
 
 /*defines for testing valid date_time inputs*/
 #define MONTHS_LOWER 1
@@ -95,7 +96,7 @@ typedef struct date_time
 typedef struct transaction_details
 {
     date_time_t trans_dt;
-    char type[15+1];
+    char type[MAX_TYPE_LEN+1];
     double principal;
     double trans_val;
     double acc_balance;
@@ -144,6 +145,7 @@ int validate_date_time(const struct date_time time); /*james*/
 
 int encryption(int key, char string[]); /*seb and walter*/
 void decryption(int key, char string[]); /*seb and walter*/
+void format_trans_type(char type[]); /*terry*/
 /*to be extended*/
 
 /*******************************************************************************
@@ -830,12 +832,13 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
     transaction_details_t transaction;    
     while(flag == 0)
     {
-        printf("please enter that date you should like to see from:\n");
+        printf("Please enter that date you should like to see from:\n");
         start_dt = dt;
         end_dt = dt;
         while(validate_date_time(start_dt) == -1)
         {
-            printf("Enter year, month, date, hour and minute separated by spaces>\n");
+            printf("Enter year, month, date, hour and minute ");
+            printf("separated by spaces>\n");
             scanf("%d %d %d %d %d", 
                 &start_dt.year,
                 &start_dt.month, 
@@ -843,10 +846,11 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
                 &start_dt.hour, 
                 &start_dt.minute);
         }
-        printf("please enter that date you should like to see to:\n");
+        printf("Please enter that date you should like to see to:\n");
         while(validate_date_time(end_dt) == -1)
         {
-            printf("Enter year, month, date, hour and minute separated by spaces>\n");
+            printf("Enter year, month, date, hour and minute ");
+            printf("separated by spaces>\n");
             scanf("%d %d %d %d %d", 
                 &end_dt.year,
                 &end_dt.month, 
@@ -858,6 +862,8 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
         {
             flag = 1;
         }
+        else
+            printf("Invalid start and/or end date\n");
     }
     
     /*set up file data base pointer*/
@@ -867,14 +873,18 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
     strcat(file_name, ".txt");
     fptr = fopen(file_name, "r");
 
+    /*check if file is read*/
     if(fptr == NULL)
     {
         printf("error when openning data base");
         return -1;
     }
 
+    /*while file isnt at the end keep reading data*/
+    /*break on first valid transaction*/
     while(fptr != NULL)
     {
+        /*check if there is anything left to read in file*/
         if(fread(&transaction, sizeof(transaction_details_t), 1, fptr) == 0)
         {
             printf("no transactions found\n");
@@ -886,9 +896,11 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
             break;
         }
     }
-printf("transaction history:\n");
-printf("transaction       transaction\n");
-printf("date              type            ammount balance\n");
+    /*print transaction history header*/
+    printf("transaction history:\n");
+    printf("transaction       transaction\n");
+    printf("date        time  type            ammount balance\n");
+    /*print all the valid transactions until end date reached*/
     while(trans_cmp(end_dt,transaction.trans_dt) == 1)
     {
         if(fread(&transaction, sizeof(transaction_details_t), 1, fptr) == 0)
@@ -897,14 +909,16 @@ printf("date              type            ammount balance\n");
             fclose(fptr);
             break;
         }
-printf("%02d/%02d/%04d  %02d:%02d %s $%.2lf $%.2lf\n", transaction.trans_dt.day,
-transaction.trans_dt.month,
-transaction.trans_dt.year,
-transaction.trans_dt.hour,
-transaction.trans_dt.minute,
-transaction.type,
-transaction.trans_val,
-transaction.acc_balance);
+        format_trans_type(transaction.type);
+        printf("%02d/%02d/%04d  %02d:%02d %s $%.2lf $%.2lf\n", 
+            transaction.trans_dt.day,
+            transaction.trans_dt.month,
+            transaction.trans_dt.year,
+            transaction.trans_dt.hour,
+            transaction.trans_dt.minute,
+            transaction.type,
+            transaction.trans_val,
+            transaction.acc_balance);
     }
 
 return 0;
@@ -1277,4 +1291,37 @@ void decryption(int key, char string[])
     }
     /*String is Decrypted*/
     printf("Decryption Successful: %s\n", string);
+}
+
+/*******************************************************************************
+ * This function inputs a transaction type and adds spaces at the end to make 
+ * sure it is ready to print in printf format  
+ * inputs:
+ * - type[]
+ * outputs:
+ * none
+ * post:
+ * transaction type will be six chars longs with a null charater at the end
+*******************************************************************************/
+void format_trans_type(char type[])
+{
+    /*initlise incrementing variables*/
+    int i, j = 0;
+    /*interate through the flightcode untiil the end of the string is found*/
+    for(i = 0; i < MAX_TYPE_LEN; i++)
+    {
+        if(type[i] == '\0')
+        {
+            /*fill the rest of the chars within the string as spaces to format
+            the flight code to be printed the same no matter the size*/
+            for(j = i; j < MAX_TYPE_LEN; j++)
+            {
+                type[j] = ' ';
+            }
+            type[MAX_TYPE_LEN] = '\0';
+            return;
+        }
+    }
+    type[MAX_TYPE_LEN] = '\0';
+    return;
 }
