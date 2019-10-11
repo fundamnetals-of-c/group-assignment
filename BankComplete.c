@@ -139,6 +139,7 @@ int validate_user_pw(char user_pw[]); /*walter*/
 void create_sq(); /*seb*/
 int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
 void validate_sq(); /*seb*/
+/* void change_password(); james*/
 int validate_date_time(const struct date_time time); /*james*/
 
 int encryption(int key, char string[]); /*seb and walter*/
@@ -214,13 +215,34 @@ int login_menu(logged_user_t * logged_user)
     }
 
     /*sort through file until found*/
+    int login_attempt = 0;
     while(fptr != NULL)
     {
         /*fill the logger struct with temp data*/
         if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
         {
             printf("incorrect ID or password\n");
-            return -1;
+            switch(login_attempt) {
+                case 0:
+                    printf("You have two more attempts\n");
+                    break;
+                case 1:
+                    printf("You have one last attempt\n");
+                    break;
+                case 2:
+                    validate_sq();
+                    return -1; 
+                    break;
+            }
+            printf("please enter again your user name: ");
+            scanf("%s", userID);
+
+            printf("please enter again your password: ");
+            scanf("%s", userPW);
+
+            strcpy(logged_user->user_num,userID);
+            strcpy(logged_user->user_pw,userPW);
+            login_attempt++;
         }
         /*check the logger information against user input*/
         if(strcmp(logger.user_pw, userPW) == 0 && 
@@ -1267,18 +1289,20 @@ int validate_date_time(const struct date_time time)
  * what happens to pointers and data after the function
 *******************************************************************************/
 void validate_sq() {
-	char answer[ANSWER_MAX_LEN];
-	int good_Answer = 0;
-	/*FILE* fp = fopen(filename,"r");*/
-	while(good_Answer < 3) {
-		printf("security question\n");
-		scanf("%s",answer);
-		if(strcmp(answer," security answer") == 0) { 
-			good_Answer++; 
-			/*go to the next question in the text files*/
-		}
-		else { printf("Wrong answer\n"); }
-	}
+    char answer[ANSWER_MAX_LEN];
+    int good_Answer = 0;
+    printf("You have failed logging in three times.\n"
+           "Please answer the 3 security questions to reset your password\n");
+    while(good_Answer < 3) {
+        printf("Security question\n"); /*security question should be stored in the txt file*/
+        scanf("%s",answer);
+        if(strcmp(answer,"answer") == 0) { 
+            good_Answer++; 
+            /*go to the next question in the text files*/
+        }
+        else { printf("Wrong answer\n"); }
+    }
+    /*change_password();*/
 }
 
 /*******************************************************************************
