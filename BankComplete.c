@@ -167,9 +167,16 @@ int main(void)
     strcpy(start->user_lvl,"start");
     start->next = NULL;
     
+int i;
+scanf("%d",&i);
+if(i != 1)
+{
     while(login_menu(logged_user) != 1);
-/*    strcpy(logged_user->user_lvl,"test");*/
-
+}
+else
+{
+    strcpy(logged_user->user_lvl,"test");
+}
     print_menu(logged_user);
     
     return 0;
@@ -363,9 +370,9 @@ print_users(start);
                     break;
             case 3 :
                     printf("view a users statement\n");
-printf("enter target users");
-scanf("%s", user_acc);
-print_statement(user_acc);
+                    printf("enter target users account number");
+                    scanf("%s", user_acc);
+                    print_statement(user_acc);
                     break;
             case 4 :
                     printf("view balance\n");
@@ -388,12 +395,15 @@ print_statement(user_acc);
                     transfer(user, "25",1);
                     break;
             case 8 :
-                    printf("change password\n");
-                    return;
+                    printf("change user password\n");
+                    printf("enter target users account number");
+                    scanf("%s", user_acc);
+                    change_password(user_acc);
+                    break;
             case 9 :
                     printf("view all account numbers\n");
                     print_users(start);
-                    return;
+                    break;
             case 10:
                     printf("logging out\n");
                     return;
@@ -504,7 +514,8 @@ void user_menu(logged_user_t * user)
         "3. deposit funds\n"
         "4. transfer funds\n"
         "5. view user statement\n"
-        "6. log out\n");
+        "6. change password\n"
+        "7. log out\n");
     
         scanf("%d", &user_input);
         switch(user_input)
@@ -538,6 +549,10 @@ void user_menu(logged_user_t * user)
                     print_statement(user->user_num);
                     break;
             case 6 :
+                    printf("change password");
+                    change_password(user->user_num);
+                    break;
+            case 7 :
                     printf("logging out\n");
                     return;
             default:
