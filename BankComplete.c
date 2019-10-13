@@ -108,8 +108,7 @@ typedef struct transactions
 } transactions_t;
 
 /*******************************************************************************
- * Function prototypes - do NOT change the given prototypes. However you may
- * define your own functions if required.
+ * Function prototypes - define your own functions if required.
 *******************************************************************************/
 /*menus*/
 int login_menu(logged_user_t * logged_user); /*james*/
@@ -125,10 +124,10 @@ double get_balance(const logged_user_t * user); /*james*/
 int deposit(logged_user_t * user, double value); /*tam*/
 int withdraw(logged_user_t * user, double value); /*tam*/
 int transfer(logged_user_t * user, 
-                char target_acc[USER_MAX_NUM_LEN],
+                const char target_acc[USER_MAX_NUM_LEN],
                 double value); /*james*/
 int print_statement(const char user_acc[USER_MAX_NUM_LEN]); /*terry*/
-void change_password(); /*james*/
+int change_password(const char user_pw[USER_MAX_NUM_LEN]); /*james*/
 
 /*admin functions*/
 int add_user(users_t * user); /*james*/
@@ -168,8 +167,8 @@ int main(void)
     strcpy(start->user_lvl,"start");
     start->next = NULL;
     
-/*    while(login_menu(logged_user) != 1);*/
-    strcpy(logged_user->user_lvl,"test");
+    while(login_menu(logged_user) != 1);
+/*    strcpy(logged_user->user_lvl,"test");*/
 
     print_menu(logged_user);
     
@@ -253,7 +252,7 @@ int login_menu(logged_user_t * logged_user)
             strcmp(logger.user_num, userID) == 0)
         {
             strcpy(logged_user->user_lvl,"test");
-            /*strcpy(logged_user->user_lvl, logger.user_lvl);*/
+            strcpy(logged_user->user_lvl, logger.user_lvl);
             logged_user->acc_balance = logger.acc_balance;
             printf("Welcome\n");
             fclose(fptr);
@@ -347,7 +346,7 @@ char user_acc[10];
         "10. log out\n"
 	"11. Encrypt\n"
 	"12. Decrypt\n"
-    "13. Validate PW\n");
+        "13. Validate PW\n");
     
         scanf("%d", &user_input);
 read_users(start);
@@ -504,14 +503,15 @@ void user_menu(logged_user_t * user)
         "2. withdraw funds\n"
         "3. deposit funds\n"
         "4. transfer funds\n"
-        "5. log out\n");
+        "5. view user statement\n"
+        "6. log out\n");
     
         scanf("%d", &user_input);
         switch(user_input)
         {
             case 1 :
                     printf("view balance\n");
-                    get_balance(user);
+                    printf("%.2lf",get_balance(user));
                     break;
             case 2 :
                     printf("withdraw funds\n");
@@ -523,7 +523,7 @@ void user_menu(logged_user_t * user)
                     printf("deposit funds\n");
                     printf("how much funds would like to deposit>");
                     scanf("%lf", &val);
-                    withdraw(user, val);
+                    deposit(user, val);
                     break;
             case 4 :
                     printf("transfer funds\n");
@@ -534,6 +534,10 @@ void user_menu(logged_user_t * user)
                     transfer(user, user_acc, val);
                     break;
             case 5 :
+                    printf("view user statement");
+                    print_statement(user->user_num);
+                    break;
+            case 6 :
                     printf("logging out\n");
                     return;
             default:
@@ -787,7 +791,7 @@ int withdraw(logged_user_t * user, double value)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int transfer(logged_user_t * user, char target_acc[], double value)
+int transfer(logged_user_t * user, const char target_acc[], double value)
 {
     /*set up temp variables*/
     date_time_t dt;
@@ -924,6 +928,59 @@ int transfer(logged_user_t * user, char target_acc[], double value)
     write_users(start);
     return 1;
 }
+
+/*******************************************************************************
+ * Description
+ * this function will allow the user to change their password
+ * INPUTS:
+ * char[USER_MAX_PW_LEN]
+ * OUTPUTS:
+ * -1 if invalid, 1 if valid
+ * POST:
+ * array is constant no change
+*******************************************************************************/
+int change_password(const char user_ID[USER_MAX_NUM_LEN])
+{
+    char pw_holder[USER_MAX_PW_LEN];
+
+    /*create linked lists*/
+    users_t * start = NULL;
+    start = malloc(sizeof(users_t));
+
+    if(start == NULL)
+    {
+        printf("mem error cannot allocate memory");
+        return -1;
+    }
+    strcpy(start->user_lvl,"start");
+    start->next = NULL;
+
+    read_users(start);
+
+    /*obtain user position*/ 
+    users_t * it = start;
+    while(it != NULL)
+    {
+        if(strcmp(it->user_num, user_ID) == 0)
+        {
+            break;
+        }
+        it = it->next;
+    }
+    
+    printf("What would you like to change your password to>");
+    scanf("%s", pw_holder);
+
+    /*validate pw*/
+    
+    strcpy(it->user_pw, pw_holder);
+
+    write_users(start);
+    printf("password successfully changed");   
+    
+    return 1;
+}
+
 /*******************************************************************************
  * Description
  * this function will allow the user to print the statement for the user account
