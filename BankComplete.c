@@ -126,8 +126,8 @@ int withdraw(logged_user_t * user, double value); /*tam*/
 int transfer(logged_user_t * user, 
                 const char target_acc[USER_MAX_NUM_LEN],
                 double value); /*james*/
-int print_statement(const char user_acc[USER_MAX_NUM_LEN]); /*terry*/
-int change_password(const char user_pw[USER_MAX_NUM_LEN]); /*james*/
+int print_statement(const char user_ID[USER_MAX_NUM_LEN]); /*terry*/
+int change_password(const char user_ID[USER_MAX_NUM_LEN]); /*james*/
 
 /*admin functions*/
 int add_user(users_t * user); /*james*/
@@ -140,7 +140,7 @@ int validate_user_ID(char user_ID[]); /*james*/
 int validate_user_pw(char user_pw[]); /*walter*/
 void create_sq(); /*seb*/
 int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
-void validate_sq(); /*seb*/
+void validate_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
 int validate_date_time(const struct date_time time); /*james*/
 
 int encryption(int key, char string[]); /*seb and walter*/
@@ -230,7 +230,7 @@ int login_menu(logged_user_t * logged_user)
         if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
         {
             printf("incorrect ID or password\n");
-	    validate_sq();
+	    validate_sq(userID);
 	    /*
             switch(login_attempt) {
                 case 0:
@@ -323,7 +323,7 @@ void dev_menu(logged_user_t * user)
     users_t * start = NULL;
     start = malloc(sizeof(users_t));
 char poop[8] = "string";
-char user_acc[10];
+char user_ID[10];
 
     if(start == NULL)
     {
@@ -371,8 +371,8 @@ print_users(start);
             case 3 :
                     printf("view a users statement\n");
                     printf("enter target users account number");
-                    scanf("%s", user_acc);
-                    print_statement(user_acc);
+                    scanf("%s", user_ID);
+                    print_statement(user_ID);
                     break;
             case 4 :
                     printf("view balance\n");
@@ -397,8 +397,8 @@ print_users(start);
             case 8 :
                     printf("change user password\n");
                     printf("enter target users account number");
-                    scanf("%s", user_acc);
-                    change_password(user_acc);
+                    scanf("%s", user_ID);
+                    change_password(user_ID);
                     break;
             case 9 :
                     printf("view all account numbers\n");
@@ -505,7 +505,7 @@ void user_menu(logged_user_t * user)
 {
     int user_input = -1;
     double val = 0;
-    char user_acc[10];
+    char user_ID[10];
     while(1)
     {
         printf("\n"
@@ -539,10 +539,10 @@ void user_menu(logged_user_t * user)
             case 4 :
                     printf("transfer funds\n");
                     printf("what account ID would you like to transfer to>");
-                    scanf("%s", user_acc);
+                    scanf("%s", user_ID);
                     printf("how much funds would like to transfer>");
                     scanf("%lf", &val);
-                    transfer(user, user_acc, val);
+                    transfer(user, user_ID, val);
                     break;
             case 5 :
                     printf("view user statement");
@@ -1007,7 +1007,7 @@ int change_password(const char user_ID[USER_MAX_NUM_LEN])
  * POST:
  * array is constant no change
 *******************************************************************************/
-int print_statement(const char user_acc[USER_MAX_NUM_LEN])
+int print_statement(const char user_ID[USER_MAX_NUM_LEN])
 {
     /*ask for date*/
     date_time_t start_dt;
@@ -1059,7 +1059,7 @@ int print_statement(const char user_acc[USER_MAX_NUM_LEN])
     /*set up file data base pointer*/
     FILE *fptr = NULL;
     char file_name[USER_MAX_NUM_LEN + 5];
-    strcpy(file_name, user_acc);
+    strcpy(file_name, user_ID);
     strcat(file_name, ".txt");
     fptr = fopen(file_name, "r");
 
@@ -1503,7 +1503,7 @@ int validate_date_time(const struct date_time time)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void validate_sq() {
+void validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
     char answer[ANSWER_MAX_LEN];
     int good_Answer = 0;
     printf("You have failed logging in three times.\n"
@@ -1517,7 +1517,7 @@ void validate_sq() {
         }
         else { printf("Wrong answer\n"); }
     }
-    /*change_password();*/
+    change_password(user_ID);
 }
 
 /*******************************************************************************
