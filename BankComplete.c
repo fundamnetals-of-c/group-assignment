@@ -143,8 +143,8 @@ int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
 void validate_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
 int validate_date_time(const struct date_time time); /*james*/
 
-int encryption(int key, char string[]); /*seb and walter*/
-void decryption(int key, char string[]); /*seb and walter*/
+const char* encryption(int key, char string[]); /*seb and walter*/
+const char* decryption(int key, char string[]); /*seb and walter*/
 void format_trans_type(char type[]); /*terry*/
 
 /*******************************************************************************
@@ -601,7 +601,7 @@ int add_user(users_t * user)
     /*check if this is the first user*/
     if(strcmp(it->user_lvl, "test") == 0)
     {
-        strcpy(it->user_num, user_num);
+        strcpy(it->user_num, encryption(1, user_num));
         strcpy(it->user_pw, user_pw);
         strcpy(it->user_lvl, user_lvl);
         it->acc_balance = acc_balance;
@@ -615,7 +615,7 @@ int add_user(users_t * user)
         }
         it->next = malloc(sizeof(users_t));
         /*entering user data into struct*/
-        strcpy(it->next->user_num, user_num);
+        strcpy(it->next->user_num, encryption(1, user_num));
         strcpy(it->next->user_pw, user_pw);
         strcpy(it->next->user_lvl, user_lvl);
         it->next->acc_balance = acc_balance;
@@ -641,7 +641,7 @@ void print_users(users_t * user)
 
     while(it != NULL)
     {
-        printf("%s\n", it->user_num);
+        printf("%s\n", decryption(1,it->user_num));
         it = it->next;
     }
 }
@@ -1529,7 +1529,7 @@ void validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-int encryption(int key, char string[])
+const char* encryption(int key, char string[])
 {
     int i;
     if (key != 0)
@@ -1552,7 +1552,7 @@ int encryption(int key, char string[])
         printf("Encryption Successful: %s\n", string);
     }
     /*Returns Key to be saved*/
-    return key;
+    return string;
 }
 /*******************************************************************************
  * Description
@@ -1563,7 +1563,7 @@ int encryption(int key, char string[])
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void decryption(int key, char string[])
+const char* decryption(int key, char string[])
 {
     int i;
     for (i=0; (i<100 && string[i] != '\0'); i++)
@@ -1572,6 +1572,7 @@ void decryption(int key, char string[])
     }
     /*String is Decrypted*/
     printf("Decryption Successful: %s\n", string);
+    return string;
 }
 
 /*******************************************************************************
