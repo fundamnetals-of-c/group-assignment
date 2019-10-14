@@ -35,6 +35,7 @@
 
 #define DEFINES "defined"
 #define USER_MAX_NUM_LEN 6
+#define USER_NUM_LETTER_LEN 2
 #define USER_MAX_PW_LEN 32
 #define USER_MAX_LVL_LEN 5
 #define SQ_MAX_LEN 30
@@ -136,8 +137,8 @@ int store_users(users_t * user); /*james*/
 int read_users(users_t * users); /*james*/
 int write_users(users_t * users); /*james*/
 
-int validate_user_ID(char user_ID[]); /*james*/
-int validate_user_pw(char user_pw[]); /*walter*/
+int validate_user_ID(const char user_ID[]); /*james*/
+int validate_user_pw(const char user_pw[]); /*walter*/
 void create_sq(); /*seb*/
 int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
 void validate_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
@@ -167,14 +168,23 @@ int main(void)
     strcpy(start->user_lvl,"start");
     start->next = NULL;
     
+    #ifdef DEBUG
+    printf("created linked list");
+    #endif
 int i;
 scanf("%d",&i);
 if(i != 1)
 {
+    #ifdef DEBUG
+    printf("USER/ADMIN MENU");
+    #endif
     while(login_menu(logged_user) != 1);
 }
 else
 {
+    #ifdef DEBUG
+    printf("DEV MENU");
+    #endif
     strcpy(logged_user->user_lvl,"test");
 }
     print_menu(logged_user);
@@ -209,6 +219,10 @@ int login_menu(logged_user_t * logged_user)
     scanf("%s", userPW);
 
     /*place into struct*/
+    #ifdef DEBUG
+    printf("USER NUM: %s\n"
+        "USER PASSWORD: %s\n");
+    #endif
     strcpy(logged_user->user_num,userID);
     strcpy(logged_user->user_pw,userPW);
     
@@ -906,13 +920,15 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     users_t * it = start;
     while(it != NULL)
     {
-        if(strcmp(it->user_num, target_acc) == 0)
+        if(strcmp(decryption(1, it->user_num), target_acc) == 0)
         {
             break;
         }
         it = it->next;
     }
+/*debug
     printf("target user: %s bal: %lf",it->user_num, it->acc_balance); 
+*/
     transaction_details.trans_dt = dt;
     strcpy(transaction_details.type, "transaction in");
     transaction_details.principal = it->acc_balance;
@@ -1312,19 +1328,52 @@ int write_users(users_t * users)
 
 /*******************************************************************************
  * Description
- * this function will validate that the user ID is within the banks terms, 
- * no to long and no illegal charaters in any spots
- * INPUTS:
- * char[]
- * OUTPUTS:
- * -1 if invalid, 1 if valid
- * POST:
- * const array, no change
+ * This function inputs a user ID string and will validate that it is 
+ * valid as per the group outline such as first two chars being letters and
+ * having to be capital letters, followed by 1 to 4 intergers. this function 
+ * will not change the user ID string
+ * inputs:
+ * - user_ID
+ * outputs:
+ * - 1 is input is valid, -1 is the input isn't valid
 *******************************************************************************/
-int validate_user_ID(char user_ID[])
+int validate_user_ID(const char user_ID[])
 {
-return 1;
+    /*initlise incrementing variable*/
+    int i;
+    /*test if flightcode is longer then the maximum determined size if it is 
+    return an error*/
+    if((int)strlen(user_ID) > USER_MAX_NUM_LEN)
+    {
+        return -1;
+    }
+    /*iterate through the letters of the flight code checking they are capiital
+	letters*/
+    for(i = 0; i < USER_NUM_LETTER_LEN; i++)
+    {
+        /*test if the flightcode letters are between A - Z or 65 - 90*/
+        if(user_ID[i] < 'A' || user_ID[i] > 'Z')
+        {
+            return -1;
+        }
+    }
+    for(i = USER_NUM_LETTER_LEN; i < USER_MAX_NUM_LEN; i++)
+    {
+        /*test if the flightcode is at the end of the string as flightcode can 
+        be less then 6 chars*/
+        if(user_ID[i] == '\0' && i > USER_NUM_LETTER_LEN)
+        {
+            return 1;
+        }
+        /*test if the flightcode numbers are between '0' - '9' or 48 - 57*/
+        else if(user_ID[i] < '0' || user_ID[i] > '9')
+        {
+            return -1;
+        }
+    }
+    return 1;
 }
+
 /*******************************************************************************
  * Description
  * INPUTS:
@@ -1334,7 +1383,7 @@ return 1;
  * POST:
  * what happens to pointers and data after the function, I dunno.
 *******************************************************************************/
-int validate_user_pw(char user_pw[])
+int validate_user_pw(const char user_pw[])
 {
     int i, upper = 0, lower = 0, digit = 0, special = 0;
     if (user_pw == NULL || strlen(user_pw) == 0)
@@ -1539,7 +1588,7 @@ const char* encryption(int key, char string[])
         /*j is the key, preferably a number.*/
         string[i] = string[i] + key;        
         }
-        printf("Encryption Successful: %s\n", string);
+        /*printf("Encryption Successful: %s\n", string);*/
     }
     else
     {
@@ -1549,7 +1598,7 @@ const char* encryption(int key, char string[])
         /*j is the key, preferably a number.*/
         string[i] = string[i] + key;        
         }
-        printf("Encryption Successful: %s\n", string);
+        /*printf("Encryption Successful: %s\n", string);*/
     }
     /*Returns Key to be saved*/
     return string;
@@ -1571,7 +1620,7 @@ const char* decryption(int key, char string[])
         string[i] = string[i] - key;        
     }
     /*String is Decrypted*/
-    printf("Decryption Successful: %s\n", string);
+    /*printf("Decryption Successful: %s\n", string);*/
     return string;
 }
 
