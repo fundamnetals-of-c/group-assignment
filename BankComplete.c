@@ -211,11 +211,11 @@ int login_menu(logged_user_t * logged_user)
     /*setup user inputs*/
     char userID[USER_MAX_NUM_LEN + 1];
     char userPW[USER_MAX_PW_LEN + 1];
-    printf("please enter a user name: ");
+    printf("please enter a user name: \n");
     scanf("%s", userID);
 
     /*validate user ID*/
-    printf("please enter your password: ");
+    printf("please enter your password: \n");
     scanf("%s", userPW);
 
     /*place into struct*/
