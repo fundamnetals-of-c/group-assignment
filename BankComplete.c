@@ -269,6 +269,8 @@ int login_menu(logged_user_t * logged_user)
             login_attempt++;*/
         }
         /*check the logger information against user input*/
+/*debug*/
+/*printf("%s : %s\n%s : %s\n",decryption(1,logger.user_pw), userPW, decryption(1,logger.user_num), userID);*/
         if(strcmp(logger.user_pw, userPW) == 0 && 
             strcmp(logger.user_num, userID) == 0)
         {
@@ -615,7 +617,7 @@ int add_user(users_t * user)
     /*check if this is the first user*/
     if(strcmp(it->user_lvl, "test") == 0)
     {
-        strcpy(it->user_num, encryption(1, user_num));
+        strcpy(it->user_num, user_num);
         strcpy(it->user_pw, user_pw);
         strcpy(it->user_lvl, user_lvl);
         it->acc_balance = acc_balance;
@@ -629,7 +631,7 @@ int add_user(users_t * user)
         }
         it->next = malloc(sizeof(users_t));
         /*entering user data into struct*/
-        strcpy(it->next->user_num, encryption(1, user_num));
+        strcpy(it->next->user_num, user_num);
         strcpy(it->next->user_pw, user_pw);
         strcpy(it->next->user_lvl, user_lvl);
         it->next->acc_balance = acc_balance;
