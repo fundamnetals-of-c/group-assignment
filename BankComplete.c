@@ -147,8 +147,8 @@ int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
 int validate_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
 int validate_date_time(const struct date_time time); /*james*/
 
-const char* encryption(int key, char string[]); /*seb and walter*/
-const char* decryption(int key, char string[]); /*seb and walter*/
+const char* encryption(char key, char string[]); /*walter*/
+const char* decryption(char key, char string[]); /*walter*/
 void format_trans_type(char type[]); /*terry*/
 
 /*******************************************************************************
@@ -1584,30 +1584,31 @@ int validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-const char* encryption(int key, char string[])
+const char* encryption(char key[], char string[])
 {
-    int i;
-    if (key != 0)
+    int i, j;
+    char strKey[strlen(key)], encString[strlen(string)];
+    
+    for (i = 0, j = 0; i < strlen(string); i++, j++)
     {
-        for (i=0; (i<100 && string[i] != '\0'); i++)
+        /*strKey will become key repeated until the same length as string*/ 
+        if (j == strlen(key))
         {
-        /*j is the key, preferably a number.*/
-        string[i] = string[i] + key;        
+            j = 0;
         }
-        /*printf("Encryption Successful: %s\n", string);*/
+        strKey[i] = key[j];
     }
-    else
+    strKey[i] = '\0';
+    
+    /*For each character until the end, add the ASCII value to string*/
+    for (i = 0; (i < 100 && string[i] != '\0'); i++)
     {
-        key = 3;  
-        for (i=0; (i<100 && string[i] != '\0'); i++)
-        {
-        /*j is the key, preferably a number.*/
-        string[i] = string[i] + key;        
-        }
-        /*printf("Encryption Successful: %s\n", string);*/
+        encString[i] = string[i] + (int)newKey[i];
     }
-    /*Returns Key to be saved*/
-    return string;
+    encString[i] = '\0';
+    
+    /*Returns encrypted string to be saved*/
+    return encString;
 }
 /*******************************************************************************
  * Description
@@ -1618,18 +1619,32 @@ const char* encryption(int key, char string[])
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-const char* decryption(int key, char string[])
+const char* decryption(char key[], char string[])
 {
-    int i;
-    for (i=0; (i<100 && string[i] != '\0'); i++)
+    int i, j;
+    char strKey[strlen(key)], decString[strlen(string)];
+    
+    for (i = 0, j = 0; i < strlen(string); i++, j++)
     {
-        string[i] = string[i] - key;        
+        /*strKey will become key repeated until the same length as string*/ 
+        if (j == strlen(key))
+        {
+            j = 0;
+        }
+        strKey[i] = key[j];
     }
-    /*String is Decrypted*/
-    /*printf("Decryption Successful: %s\n", string);*/
-    return string;
+    strKey[i] = '\0';
+    
+    /*For each character until the end, remove the ASCII value from encString*/
+    for (i = 0; (i < 100 && string[i] != '\0'); i++)
+    {
+        decString[i] = string[i] - (int)newKey[i];
+    }
+    decString[i] = '\0';
+    
+    /*Returns decrypted string to be saved*/
+    return decString;
 }
-
 /*******************************************************************************
  * This function inputs a transaction type and adds spaces at the end to make 
  * sure it is ready to print in printf format  
