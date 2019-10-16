@@ -237,7 +237,6 @@ int login_menu(logged_user_t * logged_user)
     }
 
     /*sort through file until found*/
-    /*int login_attempt = 0;*/
     while(fptr != NULL)
     {
         /*fill the logger struct with temp data*/
@@ -245,28 +244,6 @@ int login_menu(logged_user_t * logged_user)
         {
             printf("incorrect ID or password\n");
 	    validate_sq(userID);
-	    /*
-            switch(login_attempt) {
-                case 0:
-                    printf("You have two more attempts\n");
-                    break;
-                case 1:
-                    printf("You have one last attempt\n");
-                    break;
-                case 2:
-                    validate_sq();
-                    return -1; 
-                    break;
-            }
-            printf("please enter again your user name: ");
-            scanf("%s", userID);
-
-            printf("please enter again your password: ");
-            scanf("%s", userPW);
-
-            strcpy(logged_user->user_num,userID);
-            strcpy(logged_user->user_pw,userPW);
-            login_attempt++;*/
         }
         /*check the logger information against user input*/
         if(strcmp(logger.user_pw, userPW) == 0 && 
@@ -1423,12 +1400,14 @@ int validate_user_pw(const char user_pw[])
 
 /*******************************************************************************
  * Description
+ * This function asks the user to create the security questions and the answers
+ * corresponding with the questions, are stored in a file
  * INPUTS:
- * what is required to input into this function
+ * char user_ID
  * OUTPUTS:
- * what gets returned
+ * returns -1 if wasn't able to open the file, returns 1 otherwise
  * POST:
- * what happens to pointers and data after the function
+ * const array no change
 *******************************************************************************/
 int create_sq(const char user_ID[USER_MAX_NUM_LEN]) { 
     user_security_questions_t userSq;
@@ -1509,12 +1488,14 @@ int validate_date_time(const struct date_time time)
 
 /*******************************************************************************
  * Description
+ * This function asks the security questions to the user and verify if it 
+ * matches with the one from the files
  * INPUTS:
- * what is required to input into this function
+ * char user_ID
  * OUTPUTS:
- * what gets returned
+ * returns -1 if wasn't able to open the file, returns 1 otherwise
  * POST:
- * what happens to pointers and data after the function
+ * const array no change
 *******************************************************************************/
 int validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
     user_security_questions_t userSq;
