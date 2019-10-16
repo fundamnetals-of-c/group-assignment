@@ -1738,7 +1738,7 @@ int validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
 const char* encryption(char key[], char string[])
 {
     int i, j;
-    char encString[strlen(string)];
+    char strKey[strlen(key)], encString[strlen(string)];
     
     for (i = 0, j = 0; i < strlen(string); i++, j++)
     {
@@ -1754,12 +1754,13 @@ const char* encryption(char key[], char string[])
     /*For each character until the end, add the ASCII value to string*/
     for (i = 0; (i < 100 && string[i] != '\0'); i++)
     {
-        encString[i] = string[i] + (int)newKey[i];
+        encString[i] = string[i] + (int)strKey[i];
     }
     encString[i] = '\0';
-    
+    /*Note to self: Can't return local pointers*/
+    string = encString;
     /*Returns encrypted string to be saved*/
-    return encString;
+    return string;
 }
 /*******************************************************************************
  * Description
@@ -1773,7 +1774,7 @@ const char* encryption(char key[], char string[])
 const char* decryption(char key[], char string[])
 {
     int i, j;
-    char decString[strlen(string)];
+    char strKey[strlen(key)], decString[strlen(string)];
     
     for (i = 0, j = 0; i < strlen(string); i++, j++)
     {
@@ -1789,12 +1790,13 @@ const char* decryption(char key[], char string[])
     /*For each character until the end, remove the ASCII value from encString*/
     for (i = 0; (i < 100 && string[i] != '\0'); i++)
     {
-        decString[i] = string[i] - (int)newKey[i];
+        decString[i] = string[i] - (int)strKey[i];
     }
     decString[i] = '\0';
-    
+    /*Note to self: Can't return local pointers*/
+    string = decString;
     /*Returns decrypted string to be saved*/
-    return decString;
+    return string;
 }
 /*******************************************************************************
  * This function inputs a transaction type and adds spaces at the end to make 
