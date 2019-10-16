@@ -147,8 +147,8 @@ int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
 int validate_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
 int validate_date_time(const struct date_time time); /*james*/
 
-const char* encryption(char key, char string[]); /*walter*/
-const char* decryption(char key, char string[]); /*walter*/
+const char* encryption(char key[], char string[]); /*walter*/
+const char* decryption(char key[], char string[]); /*walter*/
 void format_trans_type(char type[]); /*terry*/
 
 /*******************************************************************************
@@ -249,8 +249,8 @@ int login_menu(logged_user_t * logged_user)
         /*check the logger information against user input*/
         #ifdef DEBUG
         printf("compare passwords>%s : %s\ncompare user ID>%s : %s\n",
-            decryption(1,logger.user_pw), userPW, 
-            decryption(1,logger.user_num), userID);
+            decryption("crypt",logger.user_pw), userPW, 
+            decryption("crypt",logger.user_num), userID);
         #endif
         if(strcmp(logger.user_pw, userPW) == 0 && 
             strcmp(logger.user_num, userID) == 0)
@@ -414,11 +414,11 @@ print_users(start);
                     return;
 	    case 11: 
                     printf("Encrypt; Key, String:\n");
-		    encryption(1, poop);
+		    encryption("crypt", poop);
                     break;
 	    case 12:
                     printf("Decrypt; Key, String:\n");
-		    decryption(1, poop);
+		    decryption("crypt", poop);
                     break;
                 case 13:
                     printf("Validate PW, String:\n");
@@ -647,7 +647,7 @@ void print_users(users_t * user)
 
     while(it != NULL)
     {
-        printf("%s\n", decryption(1,it->user_num));
+        printf("%s\n", decryption("crypt",it->user_num));
         it = it->next;
     }
 }
@@ -912,7 +912,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     users_t * it = start;
     while(it != NULL)
     {
-        if(strcmp(decryption(1, it->user_num), target_acc) == 0)
+        if(strcmp(decryption("crypt", it->user_num), target_acc) == 0)
         {
             break;
         }
@@ -1587,7 +1587,7 @@ int validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
 const char* encryption(char key[], char string[])
 {
     int i, j;
-    char strKey[strlen(key)], encString[strlen(string)];
+    char encString[strlen(string)];
     
     for (i = 0, j = 0; i < strlen(string); i++, j++)
     {
@@ -1622,7 +1622,7 @@ const char* encryption(char key[], char string[])
 const char* decryption(char key[], char string[])
 {
     int i, j;
-    char strKey[strlen(key)], decString[strlen(string)];
+    char decString[strlen(string)];
     
     for (i = 0, j = 0; i < strlen(string); i++, j++)
     {
