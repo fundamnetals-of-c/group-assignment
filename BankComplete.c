@@ -38,8 +38,8 @@
 #define USER_NUM_LETTER_LEN 2
 #define USER_MAX_PW_LEN 32
 #define USER_MAX_LVL_LEN 5
-#define SQ_MAX_LEN 30
-#define ANSWER_MAX_LEN 10
+#define SQ_MAX_LEN 100
+#define ANSWER_MAX_LEN 15
 #define MAX_TYPE_LEN 15
 
 /*defines for testing valid date_time inputs*/
@@ -139,9 +139,9 @@ int write_users(users_t * users); /*james*/
 
 int validate_user_ID(const char user_ID[]); /*james*/
 int validate_user_pw(const char user_pw[]); /*walter*/
-void create_sq(); /*seb*/
+int create_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
 int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
-void validate_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
+int validate_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
 int validate_date_time(const struct date_time time); /*james*/
 
 const char* encryption(int key, char string[]); /*seb and walter*/
@@ -634,6 +634,7 @@ int add_user(users_t * user)
         strcpy(it->next->user_lvl, user_lvl);
         it->next->acc_balance = acc_balance;
         it->next->next = NULL;
+        create_sq(it->next->user_num);
         store_users(it->next);
     }    
     return 1;
@@ -1429,89 +1430,52 @@ int validate_user_pw(const char user_pw[])
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void create_sq() { 
+int create_sq(const char user_ID[USER_MAX_NUM_LEN]) { 
     user_security_questions_t userSq;
-    char sq[SQ_MAX_LEN];
-    char ans[ANSWER_MAX_LEN];
-    int NumberSq = 1;
-    int option;
-    int questionNb;
-    printf("1. Choose among a list of security questions\n"
-           "2. Create your own security questions\n"
-           "Choose an option : ");
-    scanf("%d", &option);
+
+    char sq1[SQ_MAX_LEN];
+    char ans1[ANSWER_MAX_LEN];
+    char sq2[SQ_MAX_LEN];
+    char ans2[ANSWER_MAX_LEN];
+    char sq3[SQ_MAX_LEN];
+    char ans3[ANSWER_MAX_LEN];
+    char file_name[USER_MAX_NUM_LEN + 5];
+
     printf("Choose 3 security questions:\n");
-    if(option == 1) {
-        printf("1. What is you oldest sibling's middle name ?\n"
-               "2. In what city or town did your mother and father meet ?\n"
-               "3. What was the last name of your third grade teacher ?\n"
-               "4. What is your mother's maiden name ?\n"
-               "5. In what city or town was your first job ?\n"
-               "6. What was the name of your elementary school ?\n"
-               "7. In what city or town does your nearest sibling live ?\n"
-               "8. What is your pet's name ?\n");
+
+    printf("Question 1 : ");
+    fgets(sq1, SQ_MAX_LEN, stdin); 
+    printf("Answer 1 : ");
+    fgets(ans1, ANSWER_MAX_LEN, stdin); 
+
+    printf("Question 2 : ");
+    fgets(sq2, SQ_MAX_LEN, stdin); 
+    printf("Answer 2 : ");
+    fgets(ans2, ANSWER_MAX_LEN, stdin); 
+
+    printf("Question 3 : ");
+    fgets(sq3, SQ_MAX_LEN, stdin); 
+    printf("Answer 3 : ");
+    fgets(ans3, ANSWER_MAX_LEN, stdin); 
+
+    strcpy(userSq.sq1, sq1);
+    strcpy(userSq.ans1, ans1);
+    strcpy(userSq.sq2, sq2);
+    strcpy(userSq.ans2, ans2);
+    strcpy(userSq.sq3, sq3);
+    strcpy(userSq.ans3, ans3);
+
+    FILE *fptr= NULL;
+    strcpy(file_name, user_ID);
+    strcat(file_name, "sq.txt");
+    fptr=fopen(file_name,"wb");
+    if(fptr == NULL) {
+        printf("error when opening data base");
+        return -1;
     }
-    while(NumberSq < 4 ) {
-        switch(option){
-            case 1:
-                printf("Enter the number corresponding to the question : ");
-                scanf("%d", &questionNb);
-                switch(questionNb){
-                    case 1:
-                        strcpy(sq,"What is you oldest sibling's middle name ?");
-                        break;
-                    case 2:
-                        strcpy(sq,"In what city or town did your mother and father meet ?");
-                        break;
-                    case 3:
-                        strcpy(sq,"What was the last name of your third grade teacher ?");
-                        break;
-                    case 4:
-                        strcpy(sq,"What is your mother's maiden name ?");
-                        break;
-                    case 5:
-                        strcpy(sq,"In what city or town was your first job ?");
-                        break;
-                    case 6:
-                        strcpy(sq,"What was the name of your elementary school ?");
-                        break;
-                    case 7:
-                        strcpy(sq,"In what city or town does your nearest sibling live ?");
-                        break;
-                    case 8:
-                        strcpy(sq,"What is your pet's name ?");
-                        break;
-                }
-                printf("Answer %d : ", NumberSq);
-                scanf("%s",ans);
-                break;    
-            case 2:
-                printf("Question %d : ", NumberSq);
-                scanf("%s", sq);
-                printf("Answer %d : ", NumberSq);
-                scanf("%s",ans);
-                break;
-        }
-        
-        switch(NumberSq) {
-            case 1 :
-                strcpy(userSq.sq1, sq);
-                strcpy(userSq.ans1, ans);
-                break;
-            case 2 :
-                strcpy(userSq.sq2, sq);
-                strcpy(userSq.ans2, ans);
-                break;
-            case 3 :
-                strcpy(userSq.sq3, sq);
-                strcpy(userSq.ans3, ans);
-                break;
-            default:
-                break;	
-        }
-        NumberSq++;
-    }
-    /*questions and answers should be stored in the text files*/
+    fwrite(&userSq, sizeof(user_security_questions_t), 1, fptr);
+    fclose(fptr);
+    return 1;
 }
 
 /*******************************************************************************
@@ -1552,21 +1516,55 @@ int validate_date_time(const struct date_time time)
  * POST:
  * what happens to pointers and data after the function
 *******************************************************************************/
-void validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
-    char answer[ANSWER_MAX_LEN];
-    int good_Answer = 0;
-    printf("You have failed logging in three times.\n"
+int validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
+    user_security_questions_t userSq;
+    char answer1[ANSWER_MAX_LEN];
+    char answer2[ANSWER_MAX_LEN];
+    char answer3[ANSWER_MAX_LEN];
+    char file_name[USER_MAX_NUM_LEN + 5];
+
+    printf("You have failed logging in\n"
            "Please answer the 3 security questions to reset your password\n");
-    while(good_Answer < 3) {
-        printf("Security question\n"); /*security question should be stored in the txt file*/
-        scanf("%s",answer);
-        if(strcmp(answer,"answer") == 0) { 
-            good_Answer++; 
-            /*go to the next question in the text files*/
+    
+    FILE *fptr= NULL;
+    strcpy(file_name, user_ID);
+    strcat(file_name, "sq.txt");
+    fptr=fopen(file_name,"rb");
+
+    if(fptr == NULL)
+    {
+        printf("mem error file location doesnt exist");
+    }
+
+    while(fptr != NULL){
+        fread(&userSq, sizeof(user_security_questions_t), 1, fptr);
+        printf("Question 1 : %s", userSq.sq1);
+        fgets(answer1, ANSWER_MAX_LEN, stdin);;
+        printf("Question 2 : %s", userSq.sq2);
+        fgets(answer2, ANSWER_MAX_LEN, stdin);
+        printf("Question 3 : %s", userSq.sq3);
+        fgets(answer3, ANSWER_MAX_LEN, stdin);
+        if( strcmp(userSq.ans1, answer1) == 0 &&
+            strcmp(userSq.ans2, answer2) == 0 && 
+            strcmp(userSq.ans3, answer3) == 0 ) 
+        {
+            fclose(fptr);
+            return 1;
         }
-        else { printf("Wrong answer\n"); }
+        if(strcmp(userSq.ans1, answer1) != 0) {
+            printf("Answer 1 is incorrect\n");
+        }
+        if(strcmp(userSq.ans2, answer2) != 0) {
+            printf("Answer 2 is incorrect\n");
+        }
+        if(strcmp(userSq.ans3, answer3) != 0) {
+            printf("Answer 3 is incorrect\n");
+        }
+        printf("Please try again\n");
+        
     }
     change_password(user_ID);
+    return -1;
 }
 
 /*******************************************************************************
