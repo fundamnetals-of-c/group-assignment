@@ -32,6 +32,9 @@
 /*******************************************************************************
  * List preprocessing directives - DEFINES
 *******************************************************************************/
+/*comment and uncomment these to change the program modes*/
+#define DEBUG
+#define DEV
 
 #define DEFINES "defined"
 #define USER_MAX_NUM_LEN 6
@@ -167,26 +170,22 @@ int main(void)
     }
     strcpy(start->user_lvl,"start");
     start->next = NULL;
-    
-    #ifdef DEBUG
-    printf("created linked list");
+
+    /*if dev mode is not active*/
+    #ifndef DEV
+        #ifdef DEBUG
+        printf("USER/ADMIN MENU\n");
+        #endif
+        while(login_menu(logged_user) != 1);
     #endif
-int i;
-scanf("%d",&i);
-if(i != 1)
-{
-    #ifdef DEBUG
-    printf("USER/ADMIN MENU");
+
+     /*if dev mode is active*/
+     #ifdef DEV
+        #ifdef DEBUG
+        printf("DEV MENU\n");
+        #endif
+        strcpy(logged_user->user_lvl,"test");
     #endif
-    while(login_menu(logged_user) != 1);
-}
-else
-{
-    #ifdef DEBUG
-    printf("DEV MENU");
-    #endif
-    strcpy(logged_user->user_lvl,"test");
-}
     print_menu(logged_user);
     
     return 0;
@@ -221,7 +220,9 @@ int login_menu(logged_user_t * logged_user)
     /*place into struct*/
     #ifdef DEBUG
     printf("USER NUM: %s\n"
-        "USER PASSWORD: %s\n");
+        "USER PASSWORD: %s\n",
+        userID,
+        userPW);
     #endif
     strcpy(logged_user->user_num,userID);
     strcpy(logged_user->user_pw,userPW);
@@ -246,12 +247,14 @@ int login_menu(logged_user_t * logged_user)
 	    validate_sq(userID);
         }
         /*check the logger information against user input*/
-/*debug*/
-/*printf("%s : %s\n%s : %s\n",decryption(1,logger.user_pw), userPW, decryption(1,logger.user_num), userID);*/
+        #ifdef DEBUG
+        printf("compare passwords>%s : %s\ncompare user ID>%s : %s\n",
+            decryption(1,logger.user_pw), userPW, 
+            decryption(1,logger.user_num), userID);
+        #endif
         if(strcmp(logger.user_pw, userPW) == 0 && 
             strcmp(logger.user_num, userID) == 0)
         {
-            strcpy(logged_user->user_lvl,"test");
             strcpy(logged_user->user_lvl, logger.user_lvl);
             logged_user->acc_balance = logger.acc_balance;
             printf("Welcome\n");
@@ -280,14 +283,23 @@ void print_menu(logged_user_t * user)
 { 
     if(strcmp(user->user_lvl,"test") == 0)
     {
+        #ifdef DEBUG
+        printf("entering dev menu");
+        #endif
         dev_menu(user);
     }
     else if(strcmp(user->user_lvl,"admin") == 0)
     {
+        #ifdef DEBUG
+        printf("entering admin menu");
+        #endif
         admin_menu(user);
     }
     else if(strcmp(user->user_lvl,"user") == 0)
     {
+        #ifdef DEBUG
+        printf("entering user menu");
+        #endif
         user_menu(user);
     }
     else
