@@ -1158,30 +1158,43 @@ int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt)
 *******************************************************************************/
 int delete_user(users_t * user)
 {
-    /*needs to account for first and last pos, first can be done within an quick it->user check before falling into the while
-end can be done by checking next next and if next next is NULL just leave it*/
     char user_num[USER_MAX_NUM_LEN];
     printf("what is the user account number you would like to delete: ");
     scanf("%s", user_num);
 
     users_t * temp = NULL;
     users_t * it = user;
+
+    /*edge case*/
+    /*check statement if first user*/
+    if(strcmp(it->user_num, user_num) == 0)
+    {
+        user = it->next;
+        user->next = NULL;
+    }
     
+    /*search through linked list*/
     while(it->next != NULL)
     {
         if(strcmp(it->next->user_num, user_num) == 0)
         {
-            printf("hit %s\n", it->user_num);
             temp = it->next;
-            it->next = temp->next;
+            /*second edge case testing for end of linked list*/
+            if(temp->next != NULL)
+            {
+                it->next = temp->next;
+            }
+            /*if user is at end of list just delete the last entry by setting
+            pointer being tested to NULL*/
+            else
+            {
+                it->next = NULL;
+                break;
+            }
         }
-        else
-{
-printf("miss %s\n", it->user_num);
-}
-it = it->next;
+        it = it->next;
     }
-return 1;
+    return 1;
 }
 
 /*******************************************************************************
