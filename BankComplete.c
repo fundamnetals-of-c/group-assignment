@@ -329,7 +329,6 @@ void dev_menu(logged_user_t * user)
     start = malloc(sizeof(users_t));
 char poop[8] = "string";
 char user_ID[10];
-    double val = 0;
 
     if(start == NULL)
     {
@@ -339,7 +338,7 @@ char user_ID[10];
     strcpy(start->user_lvl,"start");
     start->next = NULL;
 
-    double val;
+    double val = 0;
     int user_input = -1;
     while(1)
     {
@@ -362,7 +361,7 @@ char user_ID[10];
         "13. Validate PW\n");
     
         scanf("%d", &user_input);
-read_users(start);
+        read_users(start);
         switch(user_input)
         {
             case 1 :
@@ -749,7 +748,7 @@ int deposit(logged_user_t * user, double value)
 
     #ifdef DEBUG
     printf("the local time is> %d/%d/%d %d:%d\n",
-        dt.day,dt.month,dt.year,dt.hour,dt.min);
+        dt.day,dt.month,dt.year,dt.hour,dt.minute);
     #endif
 	    
     /*fill transaction information*/
@@ -766,7 +765,7 @@ int deposit(logged_user_t * user, double value)
     #ifdef DEBUG
     printf("principal: %.2lf\n"
         "transaction value: %.2lf\n"
-        "account balance: %.2lf\n,
+        "account balance: %.2lf\n",
         transaction_details.principal, 
         transaction_details.trans_val,
         transaction_details.acc_balance);
@@ -824,7 +823,7 @@ int withdraw(logged_user_t * user, double value)
 
     #ifdef DEBUG
     printf("the local time is> %d/%d/%d %d:%d\n",
-        dt.day,dt.month,dt.year,dt.hour,dt.min);
+        dt.day,dt.month,dt.year,dt.hour,dt.minute);
     #endif
 	
     /*check if user has enough balance to withdraw*/
@@ -857,7 +856,7 @@ int withdraw(logged_user_t * user, double value)
     #ifdef DEBUG
     printf("principal: %.2lf\n"
         "transaction value: %.2lf\n"
-        "account balance: %.2lf\n,
+        "account balance: %.2lf\n",
         transaction_details.principal, 
         transaction_details.trans_val,
         transaction_details.acc_balance);
@@ -922,7 +921,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
 
     #ifdef DEBUG
     printf("the local time is> %d/%d/%d %d:%d\n",
-        dt.day,dt.month,dt.year,dt.hour,dt.min);
+        dt.day,dt.month,dt.year,dt.hour,dt.minute);
     #endif	
 	
     /*open file database to check users*/
@@ -979,7 +978,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     printf("account out account amounts>\n"
         "principal: %.2lf\n"
         "transaction value: %.2lf\n"
-        "account balance: %.2lf\n,
+        "account balance: %.2lf\n",
         transaction_details.principal, 
         transaction_details.trans_val,
         transaction_details.acc_balance);
@@ -1045,7 +1044,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     printf("account in account amounts>\n"
         "principal: %.2lf\n"
         "transaction value: %.2lf\n"
-        "account balance: %.2lf\n,
+        "account balance: %.2lf\n",
         transaction_details.principal, 
         transaction_details.trans_val,
         transaction_details.acc_balance);
