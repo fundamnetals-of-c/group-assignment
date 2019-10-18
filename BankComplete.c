@@ -214,11 +214,11 @@ int login_menu(logged_user_t * logged_user)
     /*setup user inputs*/
     char userID[USER_MAX_NUM_LEN + 1];
     char userPW[USER_MAX_PW_LEN + 1];
-    printf("please enter a user name: \n");
+    printf("Please enter a user name: \n");
     scanf("%s", userID);
 
     /*validate user ID*/
-    printf("please enter your password: \n");
+    printf("Please enter your password: \n");
     scanf("%s", userPW);
 
     /*place into struct*/
@@ -290,27 +290,27 @@ void print_menu(logged_user_t * user)
     if(strcmp(user->user_lvl,"test") == 0)
     {
         #ifdef DEBUG
-        printf("entering dev menu");
+        printf("Entering dev menu");
         #endif
         dev_menu(user);
     }
     else if(strcmp(user->user_lvl,"admin") == 0)
     {
         #ifdef DEBUG
-        printf("entering admin menu");
+        printf("Entering admin menu");
         #endif
         admin_menu(user);
     }
     else if(strcmp(user->user_lvl,"user") == 0)
     {
         #ifdef DEBUG
-        printf("entering user menu");
+        printf("Entering user menu");
         #endif
         user_menu(user);
     }
     else
     {
-        printf("unable to match user level with a valid user level\n");
+        printf("Unable to match user level with a valid user level\n");
     }        
 }
 
@@ -352,19 +352,19 @@ void dev_menu(logged_user_t * user)
     while(1)
     {
         printf("\n"
-        "admin options:\n"
-        "1. add user\n"
-        "2. remove user\n"
-        "3. view user statement\n"
-        "user options:\n"
-        "4. view balance\n"
+        "Admin options:\n"
+        "1. Add user\n"
+        "2. Remove user\n"
+        "3. View user statement\n"
+        "User options:\n"
+        "4. View balance\n"
         "5. withdraw funds\n"
-        "6. deposit funds\n"
-        "7. transfer funds\n"
-        "8. chnage password\n"
-        "dev options:\n"
-        "9. view all user account numbers\n"
-        "10. log out\n"
+        "6. Deposit funds\n"
+        "7. Transfer funds\n"
+        "8. Change password\n"
+        "Dev options:\n"
+        "9. View all user account numbers\n"
+        "10. Logout\n"
 	"11. Encrypt\n"
 	"12. Decrypt\n"
         "13. Validate PW\n");
@@ -375,7 +375,7 @@ void dev_menu(logged_user_t * user)
         {
             case 1 :
                     #ifdef DEBUG
-                    printf("add user\n");
+                    printf("Add user\n");
                     #endif
                     add_user(start);
                     printf("\nPrinting total users\n");
@@ -383,27 +383,27 @@ void dev_menu(logged_user_t * user)
                     break;
             case 2 :
                     #ifdef DEBUG
-                    printf("remove user\n");
+                    printf("Remove user\n");
                     #endif
                     delete_user(start);
                     break;
             case 3 :
                     #ifdef DEBUG
-                    printf("view a users statement\n");
+                    printf("View a users statement\n");
                     #endif
-                    printf("enter target users account number");
+                    printf("Enter target users account number");
                     scanf("%s", user_ID);
                     print_statement(user_ID);
                     break;
             case 4 :
                     #ifdef DEBUG
-                    printf("view balance\n");
+                    printf("View balance\n");
                     #endif
-                    printf("your balance is: $%.2lf\n", get_balance(user));
+                    printf("Your balance is: $%.2lf\n", get_balance(user));
                     break;
             case 5 :
                     #ifdef DEBUG
-                    printf("withdraw funds\n");
+                    printf("Withdraw funds\n");
                     #endif
                     printf("Please enter how much you wish to withdraw:>");
                     scanf("%lf", &val);
@@ -411,7 +411,7 @@ void dev_menu(logged_user_t * user)
                     break;
             case 6 :
                     #ifdef DEBUG
-                    printf("depoit funds\n");
+                    printf("Depoit funds\n");
                     #endif
                     printf("Please enter how much you wish to deposit:>");
                     scanf("%lf", &val);
@@ -419,30 +419,30 @@ void dev_menu(logged_user_t * user)
                     break;
             case 7 :
                     #ifdef DEBUG
-                    printf("transfer funds\n");
+                    printf("Transfer funds\n");
                     #endif
-                    printf("what account ID would you like to transfer to>");
+                    printf("What account ID would you like to transfer to>");
                     scanf("%s", user_ID);
-                    printf("how much funds would like to transfer>");
+                    printf("How much funds would like to transfer>");
                     scanf("%lf", &val);
                     transfer(user, user_ID, val);
                     break;
             case 8 :
                     #ifdef DEBUG
-                    printf("change user password\n");
+                    printf("Change user password\n");
                     #endif
-                    printf("enter target users account number");
+                    printf("Enter target users account number");
                     scanf("%s", user_ID);
                     change_password(user_ID);
                     break;
             case 9 :
                     #ifdef DEBUG
-                    printf("view all account numbers\n");
+                    printf("View all account numbers\n");
                     #endif
                     print_users(start);
                     break;
             case 10:
-                    printf("logging out\n");
+                    printf("Logging out\n");
                     return;
 	    case 11: 
                     /*printf("Encrypt; Key, String:\n");*/
@@ -501,18 +501,18 @@ void admin_menu(logged_user_t * user)
     while(1)
     {
         printf("\n"
-        "1. add user\n"
-        "2. remove user\n"
-        "3. view user statement\n"
-        "4. change users password\n"
-        "4. log out\n");
+        "1. Add user\n"
+        "2. Remove user\n"
+        "3. View user statement\n"
+        "4. Change users password\n"
+        "4. Logout\n");
     
         scanf("%d", &user_input);
         switch(user_input)
         {
             case 1 :
                     #ifdef DEBUG
-                    printf("add user\n");
+                    printf("Add user\n");
                     #endif
                     add_user(start);
                     printf("\nPrinting total users\n");
@@ -520,28 +520,28 @@ void admin_menu(logged_user_t * user)
                     break;
             case 2 :
                     #ifdef DEBUG
-                    printf("remove user\n");
+                    printf("Remove user\n");
                     #endif
                     delete_user(start);
                     break;
             case 3 :
                     #ifdef DEBUG
-                    printf("view a users statement\n");
+                    printf("View a users statement\n");
                     #endif
-                    printf("enter target users account number");
+                    printf("Enter target users account number");
                     scanf("%s", user_ID);
                     print_statement(user_ID);
                     break;
             case 4 :
                     #ifdef DEBUG
-                    printf("change user password\n");
+                    printf("Change user password\n");
                     #endif
-                    printf("enter target users account number");
+                    printf("Enter target users account number");
                     scanf("%s", user_ID);
                     change_password(user_ID);
                     break;
             case 5 :
-                    printf("logging out\n");
+                    printf("Logging out\n");
                     return;
             default:
                     printf("Invalid input\n");
@@ -572,63 +572,63 @@ void user_menu(logged_user_t * user)
     while(1)
     {
         printf("\n"
-        "1. view balance\n"
-        "2. withdraw funds\n"
-        "3. deposit funds\n"
-        "4. transfer funds\n"
-        "5. view user statement\n"
-        "6. change password\n"
-        "7. log out\n");
+        "1. View balance\n"
+        "2. Withdraw funds\n"
+        "3. Deposit funds\n"
+        "4. Transfer funds\n"
+        "5. View user statement\n"
+        "6. Change password\n"
+        "7. Logout\n");
     
         scanf("%d", &user_input);
         switch(user_input)
         {
             case 1 :
                     #ifdef DEBUG
-                    printf("view balance\n");
+                    printf("View balance\n");
                     #endif
                     printf("%.2lf",get_balance(user));
                     break;
             case 2 :
                     #ifdef DEBUG
-                    printf("withdraw funds\n");
+                    printf("Withdraw funds\n");
                     #endif
-                    printf("how much funds would like to withdraw>");
+                    printf("How much funds would like to withdraw>");
                     scanf("%lf", &val);
                     withdraw(user, val);
                     break;
             case 3 :
                     #ifdef DEBUG
-                    printf("deposit funds\n");
+                    printf("Deposit funds\n");
                     #endif
-                    printf("how much funds would like to deposit>");
+                    printf("How much funds would like to deposit>");
                     scanf("%lf", &val);
                     deposit(user, val);
                     break;
             case 4 :
                     #ifdef DEBUG
-                    printf("transfer funds\n");
+                    printf("Transfer funds\n");
                     #endif
-                    printf("what account ID would you like to transfer to>");
+                    printf("What account ID would you like to transfer to>");
                     scanf("%s", user_ID);
-                    printf("how much funds would like to transfer>");
+                    printf("How much funds would like to transfer>");
                     scanf("%lf", &val);
                     transfer(user, user_ID, val);
                     break;
             case 5 :
                     #ifdef DEBUG
-                    printf("view user statement");
+                    printf("View user statement");
                     #endif
                     print_statement(user->user_num);
                     break;
             case 6 :
                     #ifdef DEBUG
-                    printf("change password");
+                    printf("Change password");
                     #endif
                     change_password(user->user_num);
                     break;
             case 7 :
-                    printf("logging out\n");
+                    printf("Logging out\n");
                     return;
             default:
                     printf("Invalid input\n");
@@ -786,7 +786,7 @@ int deposit(logged_user_t * user, double value)
     dt.minute = timeinfo->tm_min;
 
     #ifdef DEBUG
-    printf("the local time is> %02d/%02d/%04d %02d:%02d\n",
+    printf("The local time is> %02d/%02d/%04d %02d:%02d\n",
         dt.day,dt.month,dt.year,dt.hour,dt.minute);
     #endif
 	    
@@ -802,9 +802,9 @@ int deposit(logged_user_t * user, double value)
     user->acc_balance = transaction_details.acc_balance;
 
     #ifdef DEBUG
-    printf("principal: %.2lf\n"
-        "transaction value: %.2lf\n"
-        "account balance: %.2lf\n",
+    printf("Principal: %.2lf\n"
+        "Transaction value: %.2lf\n"
+        "Account balance: %.2lf\n",
         transaction_details.principal, 
         transaction_details.trans_val,
         transaction_details.acc_balance);
@@ -820,7 +820,7 @@ int deposit(logged_user_t * user, double value)
     /*check the data base has no errors*/
     if(fptr == NULL)
     {
-        printf("error when openning data base");
+        printf("Rrror when openning data base");
         return -1;
     }
 
@@ -861,7 +861,7 @@ int withdraw(logged_user_t * user, double value)
     dt.minute = timeinfo->tm_min;
 
     #ifdef DEBUG
-    printf("the local time is> %02d/%02d/%04d %02d:%02d\n",
+    printf("The local time is> %02d/%02d/%04d %02d:%02d\n",
         dt.day,dt.month,dt.year,dt.hour,dt.minute);
     #endif
 	
@@ -869,10 +869,10 @@ int withdraw(logged_user_t * user, double value)
     if(user->acc_balance < value)
     {
         #ifdef DEBUG
-        printf("not enough funds to withdraw");
+        printf("Not enough funds to withdraw");
         #endif
 
-        printf("error: not enough funds within account");
+        printf("Error: not enough funds within account");
         transaction_details.trans_dt = dt;
         strcpy(transaction_details.type, "low fund");
         transaction_details.principal = user->acc_balance;
@@ -893,9 +893,9 @@ int withdraw(logged_user_t * user, double value)
     user->acc_balance = transaction_details.acc_balance;
 
     #ifdef DEBUG
-    printf("principal: %.2lf\n"
-        "transaction value: %.2lf\n"
-        "account balance: %.2lf\n",
+    printf("Principal: %.2lf\n"
+        "Transaction value: %.2lf\n"
+        "Account balance: %.2lf\n",
         transaction_details.principal, 
         transaction_details.trans_val,
         transaction_details.acc_balance);
@@ -908,7 +908,7 @@ int withdraw(logged_user_t * user, double value)
     strcat(file_name, ".txt");
 	
     #ifdef DEBUG
-    printf("the file name is>%s",file_name);
+    printf("The file name is>%s",file_name);
     #endif
 	
     fptr = fopen(file_name, "a");
@@ -916,7 +916,7 @@ int withdraw(logged_user_t * user, double value)
     /*check the database has no errors opening*/
     if(fptr == NULL)
     {
-        printf("error when openning data base");
+        printf("Error when openning data base");
         return -1;
     }
 
@@ -959,7 +959,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     dt.minute = timeinfo->tm_min;
 
     #ifdef DEBUG
-    printf("the local time is> %02d/%02d/%04d %02d:%02d\n",
+    printf("The local time is> %02d/%02d/%04d %02d:%02d\n",
         dt.day,dt.month,dt.year,dt.hour,dt.minute);
     #endif	
 	
@@ -991,7 +991,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     if(user->acc_balance < value)
     {
         #ifdef DEBUG
-        printf("not enough funds to transfer");
+        printf("Not enough funds to transfer");
         #endif
 
         transaction_details.trans_dt = dt;
@@ -1014,10 +1014,10 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     user->acc_balance = transaction_details.acc_balance;
     
     #ifdef DEBUG
-    printf("account out account amounts>\n"
-        "principal: %.2lf\n"
-        "transaction value: %.2lf\n"
-        "account balance: %.2lf\n",
+    printf("Account out account amounts>\n"
+        "Principal: %.2lf\n"
+        "Transaction value: %.2lf\n"
+        "Account balance: %.2lf\n",
         transaction_details.principal, 
         transaction_details.trans_val,
         transaction_details.acc_balance);
@@ -1030,14 +1030,14 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     strcat(file_name, ".txt");\
 	    
     #ifdef DEBUG
-    printf("the file name is>%s",file_name);
+    printf("The file name is>%s",file_name);
     #endif	    
 	    
     fptr = fopen(file_name, "a");
 
     if(fptr == NULL)
     {
-        printf("error when openning data base");
+        printf("Error when openning data base");
         return -1;
     }
 
@@ -1080,10 +1080,10 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     it->acc_balance = transaction_details.acc_balance;
 
     #ifdef DEBUG
-    printf("account in account amounts>\n"
-        "principal: %.2lf\n"
-        "transaction value: %.2lf\n"
-        "account balance: %.2lf\n",
+    printf("Account in account amounts>\n"
+        "Principal: %.2lf\n"
+        "Transaction value: %.2lf\n"
+        "Account balance: %.2lf\n",
         transaction_details.principal, 
         transaction_details.trans_val,
         transaction_details.acc_balance);
@@ -1096,12 +1096,12 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     fptr = fopen(file_name, "a");
 
     #ifdef DEBUG
-    printf("the file name is>%s",file_name);
+    printf("The file name is>%s",file_name);
     #endif	
 	
     if(fptr == NULL)
     {
-        printf("error when openning data base");
+        printf("Error when openning data base");
         return -1;
     }
 
@@ -1161,7 +1161,7 @@ int change_password(const char user_ID[USER_MAX_NUM_LEN])
     strcpy(it->user_pw, pw_holder);
 
     write_users(start);
-    printf("password successfully changed");   
+    printf("Password successfully changed");   
     
     return 1;
 }
@@ -1234,13 +1234,13 @@ int print_statement(const char user_ID[USER_MAX_NUM_LEN])
     fptr = fopen(file_name, "r");
 
     #ifdef DEBUG
-    printf("the file name is>%s",file_name);
+    printf("The file name is>%s",file_name);
     #endif	
 	
     /*check if file is read*/
     if(fptr == NULL)
     {
-        printf("error when openning data base");
+        printf("Error when openning data base");
         return -1;
     }
 
@@ -1251,7 +1251,7 @@ int print_statement(const char user_ID[USER_MAX_NUM_LEN])
         /*check if there is anything left to read in file*/
         if(fread(&transaction, sizeof(transaction_details_t), 1, fptr) == 0)
         {
-            printf("no transactions found\n");
+            printf("No transactions found\n");
             fclose(fptr);
             return -1;
         }
@@ -1275,9 +1275,9 @@ int print_statement(const char user_ID[USER_MAX_NUM_LEN])
 	    
     }
     /*print transaction history header*/
-    printf("transaction history:\n");
-    printf("transaction       transaction\n");
-    printf("date        time  type            ammount balance\n");
+    printf("Transaction history:\n");
+    printf("Transaction       transaction\n");
+    printf("Date        time  type            ammount balance\n");
     /*print all the valid transactions until end date reached*/
     while(trans_cmp(end_dt,transaction.trans_dt) == 1)
     {
@@ -1351,7 +1351,7 @@ int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt)
 int delete_user(users_t * user)
 {
     char user_num[USER_MAX_NUM_LEN];
-    printf("what is the user account number you would like to delete: ");
+    printf("What is the user account number you would like to delete: ");
     scanf("%s", user_num);
 
     users_t * temp = NULL;
@@ -1413,7 +1413,7 @@ int store_users(users_t * user)
     fptr = fopen("users.txt", "a");
     if(fptr == NULL)
     {
-        printf("error when openning data base");
+        printf("Error when openning data base");
         return -1;
     }
     logged_user_t write_user;
