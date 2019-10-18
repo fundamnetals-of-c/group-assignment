@@ -255,11 +255,11 @@ int login_menu(logged_user_t * logged_user)
         /*check the logger information against user input*/
         #ifdef DEBUG
         printf("compare passwords>%s : %s\ncompare user ID>%s : %s\n",
-            decryption("crypt",logger.user_pw), userPW,
-            decryption("crypt",logger.user_num), userID);
+            logger.user_pw, userPW,
+            logger.user_num, userID);
         #endif
-        if(strcmp(decryption("crypt",logger.user_pw), userPW) == 0 && 
-            strcmp(decryption("crypt",logger.user_num), userID) == 0)
+        if(strcmp(logger.user_pw, userPW) == 0 && 
+            strcmp(logger.user_num, userID) == 0)
         {
             strcpy(logged_user->user_lvl, logger.user_lvl);
             logged_user->acc_balance = logger.acc_balance;
@@ -694,8 +694,8 @@ int add_user(users_t * user)
     /*check if this is the first user*/
     if(strcmp(it->user_lvl, "test") == 0)
     {
-        strcpy(it->user_num, encryption("crypt",user_num));
-        strcpy(it->user_pw, encryption("crypt",user_pw));
+        strcpy(it->user_num, user_num);
+        strcpy(it->user_pw, user_pw);
         strcpy(it->user_lvl, user_lvl);
         it->acc_balance = acc_balance;
         store_users(it);
@@ -708,8 +708,8 @@ int add_user(users_t * user)
         }
         it->next = malloc(sizeof(users_t));
         /*entering user data into struct*/
-        strcpy(it->next->user_num, encryption("crypt",user_num));
-        strcpy(it->next->user_pw, encryption("crypt",user_pw));
+        strcpy(it->next->user_num, user_num);
+        strcpy(it->next->user_pw, user_pw);
         strcpy(it->next->user_lvl, user_lvl);
         it->next->acc_balance = acc_balance;
         it->next->next = NULL;
@@ -735,7 +735,7 @@ void print_users(users_t * user)
 
     while(it != NULL)
     {
-        printf("%s\n", decryption("crypt",it->user_num));
+        printf("%s\n", it->user_num);
         it = it->next;
     }
 }
@@ -981,7 +981,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
             fclose(fptr);
             return -1;
         }
-        if(strcmp(decryption("crypt",logger.user_num), target_acc) == 0)
+        if(strcmp(logger.user_num, target_acc) == 0)
         {
             fclose(fptr);
             break;
@@ -1062,7 +1062,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     users_t * it = start;
     while(it != NULL)
     {
-        if(strcmp(decryption("crypt", it->user_num), target_acc) == 0)
+        if(strcmp(it->user_num, target_acc) == 0)
         {
             break;
         }
