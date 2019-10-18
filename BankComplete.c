@@ -856,6 +856,36 @@ int deposit(logged_user_t * user, double value)
     /*write to database*/
     fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
     fclose(fptr);
+
+    /*create linked lists to rewrite*/
+    users_t * start = NULL;
+    start = malloc(sizeof(users_t));
+
+    if(start == NULL)
+    {
+        printf("mem error");
+        return -1;
+    }
+    strcpy(start->user_lvl,"start");
+    start->next = NULL;
+
+    read_users(start);
+    
+    /*obtain and write data*/ 
+    users_t * it = start;
+    while(it != NULL)
+    {
+        if(strcmp(it->user_num, user->user_num) == 0)
+        {
+            break;
+        }
+        it = it->next;
+    }
+
+    it->acc_balance = transaction_details.acc_balance;
+
+    write_users(start);
+
     return 1;
 }
 
@@ -952,6 +982,36 @@ int withdraw(logged_user_t * user, double value)
     /*write transaction to file*/
     fwrite(&transaction_details, sizeof(transaction_details_t), 1, fptr);
     fclose(fptr);
+
+    /*create linked lists to rewrite*/
+    users_t * start = NULL;
+    start = malloc(sizeof(users_t));
+
+    if(start == NULL)
+    {
+        printf("mem error");
+        return -1;
+    }
+    strcpy(start->user_lvl,"start");
+    start->next = NULL;
+
+    read_users(start);
+    
+    /*obtain and write data*/ 
+    users_t * it = start;
+    while(it != NULL)
+    {
+        if(strcmp(it->user_num, user->user_num) == 0)
+        {
+            break;
+        }
+        it = it->next;
+    }
+
+    it->acc_balance = transaction_details.acc_balance;
+
+    write_users(start);
+
     return 1;
 }
 
@@ -1074,6 +1134,36 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     fclose(fptr);
 
     /*create linked lists to rewrite*/
+    users_t * head = NULL;
+    head = malloc(sizeof(users_t));
+
+    if(head == NULL)
+    {
+        printf("mem error");
+        return -1;
+    }
+    strcpy(head->user_lvl,"start");
+    head->next = NULL;
+
+    read_users(head);
+    
+    /*obtain and write data*/ 
+    users_t * it = head;
+    while(it != NULL)
+    {
+        if(strcmp(it->user_num, user->user_num) == 0)
+        {
+            break;
+        }
+        it = it->next;
+    }
+
+    it->acc_balance = transaction_details.acc_balance;
+
+    write_users(head);
+
+
+    /*create linked lists to rewrite*/
     users_t * start = NULL;
     start = malloc(sizeof(users_t));
 
@@ -1088,7 +1178,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     read_users(start);
     
     /*obtain and write data*/ 
-    users_t * it = start;
+    it = start;
     while(it != NULL)
     {
         if(strcmp(it->user_num, target_acc) == 0)
@@ -1182,7 +1272,7 @@ int change_password(const char user_ID[USER_MAX_NUM_LEN])
         it = it->next;
     }
     
-    printf("What would you like to change your password to> ");
+    printf("What would you like to change your password to>");
     scanf("%s", pw_holder);
 
     /*validate pw*/
