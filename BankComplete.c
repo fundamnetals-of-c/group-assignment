@@ -44,6 +44,8 @@
 #define SQ_MAX_LEN 100
 #define ANSWER_MAX_LEN 15
 #define MAX_TYPE_LEN 15
+#define USER "user"
+#define ADMIN "admin"
 
 /*defines for testing valid date_time inputs*/
 #define MONTHS_LOWER 1
@@ -146,6 +148,7 @@ int create_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
 int trans_cmp(const struct date_time trans_dt, const struct date_time date_dt);
 int validate_sq(const char user_ID[USER_MAX_NUM_LEN]); /*seb*/
 int validate_date_time(const struct date_time time); /*james*/
+int validate_user_lvl(const char user_lvl[]); /*james*/
 
 const char* encryption(char key[], char string[]); /*walter*/
 const char* decryption(char key[], char string[]); /*walter*/
@@ -168,7 +171,7 @@ int main(void)
         printf("mem error");
         return -1;
     }
-    strcpy(start->user_lvl,"start");
+    strcpy(start->user_lvl,"test");
     start->next = NULL;
 
     /*if dev mode is not active*/
@@ -179,8 +182,8 @@ int main(void)
         while(login_menu(logged_user) != 1);
     #endif
 
-     /*if dev mode is active*/
-     #ifdef DEV
+    /*if dev mode is active*/
+    #ifdef DEV
         #ifdef DEBUG
         printf("DEV MENU\n");
         #endif
@@ -244,16 +247,17 @@ int login_menu(logged_user_t * logged_user)
         if(fread(&logger, sizeof(logged_user_t), 1, fptr) == 0)
         {
             printf("incorrect ID or password\n");
-	    validate_sq(userID);
+            return -1;
+	    /*validate_sq(userID);*/
         }
         /*check the logger information against user input*/
         #ifdef DEBUG
         printf("compare passwords>%s : %s\ncompare user ID>%s : %s\n",
-            decryption("crypt",logger.user_pw), userPW, 
+            decryption("crypt",logger.user_pw), userPW,
             decryption("crypt",logger.user_num), userID);
         #endif
-        if(strcmp(logger.user_pw, userPW) == 0 && 
-            strcmp(logger.user_num, userID) == 0)
+        if(strcmp(decryption("crypt",logger.user_pw), userPW) == 0 && 
+            strcmp(decryption("crypt",logger.user_num), userID) == 0)
         {
             strcpy(logged_user->user_lvl, logger.user_lvl);
             logged_user->acc_balance = logger.acc_balance;
@@ -327,8 +331,8 @@ void dev_menu(logged_user_t * user)
 
     users_t * start = NULL;
     start = malloc(sizeof(users_t));
-char poop[8] = "string";
-char user_ID[10];
+    char str_temp[8] = "string";
+    char user_ID[10];
 
     if(start == NULL)
     {
@@ -340,6 +344,9 @@ char user_ID[10];
 
     double val = 0;
     int user_input = -1;
+
+    read_users(start);
+
     while(1)
     {
         printf("\n"
@@ -361,7 +368,7 @@ char user_ID[10];
         "13. Validate PW\n");
     
         scanf("%d", &user_input);
-        read_users(start);
+        
         switch(user_input)
         {
             case 1 :
@@ -436,17 +443,19 @@ char user_ID[10];
                     printf("logging out\n");
                     return;
 	    case 11: 
-                    printf("Encrypt; Key, String:\n");
-		    encryption("crypt", poop);
+                    /*printf("Encrypt; Key, String:\n");*/
+		    strcpy(str_temp,encryption("crypt", str_temp));
+                    printf("%s",str_temp);
                     break;
 	    case 12:
-                    printf("Decrypt; Key, String:\n");
-		    decryption("crypt", poop);
+                    /*printf("Decrypt; Key, String:\n");*/
+		    strcpy(str_temp,decryption("crypt", str_temp));
+                    printf("%s <%d>", str_temp, strcmp(str_temp,"string"));
                     break;
-                case 13:
+            case 13:
                     printf("Validate PW, String:\n");
-                    scanf("%s", poop);
-		            validate_user_pw(poop);
+                    scanf("%s", str_temp);
+		    validate_user_pw(str_temp);
                     break;
             default:
                     printf("Invalid input\n");
@@ -482,6 +491,8 @@ void admin_menu(logged_user_t * user)
     strcpy(start->user_lvl,"start");
     start->next = NULL;
 
+    read_users(start);
+
     int user_input = -1;
     while(1)
     {
@@ -489,6 +500,7 @@ void admin_menu(logged_user_t * user)
         "1. add user\n"
         "2. remove user\n"
         "3. view user statement\n"
+        "4. change users password\n"
         "4. log out\n");
     
         scanf("%d", &user_input);
@@ -499,19 +511,32 @@ void admin_menu(logged_user_t * user)
                     printf("add user\n");
                     #endif
                     add_user(start);
+                    printf("\nPrinting total users\n");
                     print_users(start);
                     break;
             case 2 :
                     #ifdef DEBUG
                     printf("remove user\n");
                     #endif
+                    delete_user(start);
                     break;
             case 3 :
                     #ifdef DEBUG
                     printf("view a users statement\n");
                     #endif
+                    printf("enter target users account number");
+                    scanf("%s", user_ID);
+                    print_statement(user_ID);
                     break;
             case 4 :
+                    #ifdef DEBUG
+                    printf("change user password\n");
+                    #endif
+                    printf("enter target users account number");
+                    scanf("%s", user_ID);
+                    change_password(user_ID);
+                    break;
+            case 5 :
                     printf("logging out\n");
                     return;
             default:
@@ -628,6 +653,8 @@ int add_user(users_t * user)
     char user_lvl[USER_MAX_LVL_LEN + 1];
     double acc_balance;
 
+    int user_choice;
+
     /*entering user data*/
     printf("Enter user information\n");
     printf("Enter the new user number: \n");
@@ -636,10 +663,18 @@ int add_user(users_t * user)
     printf("Enter the new user password: \n");
     scanf("%s", user_pw);
     /*validate*/
-    printf("Enter the user level");
-    /*validate*/
-    scanf("%s", user_lvl);
-    printf("Enter user initial account balance");
+    while(validate_user_lvl(user_lvl) != 1)
+    {
+        printf("Enter the user level:\n");
+        printf("Enter 1 for admin, Enter 2 for user\n");
+        /*validate*/
+        scanf("%d", &user_choice);
+        if(user_choice == 1)
+            strcpy(user_lvl,ADMIN);
+        if(user_choice == 2)
+            strcpy(user_lvl,USER);
+    }
+    printf("Enter user initial account balance: \n");
     scanf("%lf", &acc_balance);
 
     #ifdef DEBUG
@@ -655,8 +690,8 @@ int add_user(users_t * user)
     /*check if this is the first user*/
     if(strcmp(it->user_lvl, "test") == 0)
     {
-        strcpy(it->user_num, user_num);
-        strcpy(it->user_pw, user_pw);
+        strcpy(it->user_num, encryption("crypt",user_num));
+        strcpy(it->user_pw, encryption("crypt",user_pw));
         strcpy(it->user_lvl, user_lvl);
         it->acc_balance = acc_balance;
         store_users(it);
@@ -669,12 +704,12 @@ int add_user(users_t * user)
         }
         it->next = malloc(sizeof(users_t));
         /*entering user data into struct*/
-        strcpy(it->next->user_num, user_num);
-        strcpy(it->next->user_pw, user_pw);
+        strcpy(it->next->user_num, encryption("crypt",user_num));
+        strcpy(it->next->user_pw, encryption("crypt",user_pw));
         strcpy(it->next->user_lvl, user_lvl);
         it->next->acc_balance = acc_balance;
         it->next->next = NULL;
-        create_sq(it->next->user_num);
+        /*create_sq(it->next->user_num);*/
         store_users(it->next);
     }    
     return 1;
@@ -1797,7 +1832,9 @@ const char* decryption(char key[], char string[])
     /*Returns decrypted string to be saved*/
     return string;
 }
+
 /*******************************************************************************
+ * Description 
  * This function inputs a transaction type and adds spaces at the end to make 
  * sure it is ready to print in printf format  
  * inputs:
@@ -1828,4 +1865,27 @@ void format_trans_type(char type[])
     }
     type[MAX_TYPE_LEN] = '\0';
     return;
+}
+
+/*******************************************************************************
+ * Descritpion
+ * This function inputs a user level string and checks its valid 
+ * inputs:
+ * - user_lvl[]
+ * outputs:
+ * 1 is valid, -1 if invalid
+ * post:
+ * array is const
+*******************************************************************************/
+int validate_user_lvl(const char user_lvl[])
+{
+    if(strcmp(user_lvl, USER) == 0)
+    {
+        return 1;
+    }
+    if(strcmp(user_lvl, ADMIN) == 0)
+    {
+        return 1;
+    }
+    return -1;
 }
