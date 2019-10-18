@@ -1763,11 +1763,11 @@ int validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is required to input into this function
+ * char key[] (User ID), char string[]
  * OUTPUTS:
- * what gets returned
+ * Returns the encrypted string.
  * POST:
- * what happens to pointers and data after the function
+ * Key does not change, string changes to encrypted string.
 *******************************************************************************/
 const char* encryption(char key[], char string[])
 {
@@ -1799,11 +1799,11 @@ const char* encryption(char key[], char string[])
 /*******************************************************************************
  * Description
  * INPUTS:
- * what is required to input into this function
+ * char key[] (User ID), char string[]
  * OUTPUTS:
- * what gets returned
+ * Returns the decrypted string.
  * POST:
- * what happens to pointers and data after the function
+ * Key does not change, string changes to decrypted string.
 *******************************************************************************/
 const char* decryption(char key[], char string[])
 {
