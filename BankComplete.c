@@ -214,10 +214,19 @@ int login_menu(logged_user_t * logged_user)
     /*setup user inputs*/
     char userID[USER_MAX_NUM_LEN + 1];
     char userPW[USER_MAX_PW_LEN + 1];
-    printf("Please enter a user name: \n");
-    scanf("%s", userID);
 
     /*validate user ID*/
+    while(validate_user_ID(userID) == -1)
+    {
+        printf("Please enter a user name: \n");
+        scanf("%s", userID);
+        if(validate_user_ID(userID) == -1)
+        {
+            printf("invalid user ID");
+        }
+    }
+    
+    
     printf("Please enter your password: \n");
     scanf("%s", userPW);
 
@@ -661,12 +670,31 @@ int add_user(users_t * user)
 
     /*entering user data*/
     printf("Enter user information\n");
-    printf("Enter the new user number: \n");
-    scanf("%s", user_num);
-    /*validate*/
-    printf("Enter the new user password: \n");
-    scanf("%s", user_pw);
-    /*validate*/
+    
+    /*enter valid user ID*/
+    while(validate_user_ID(user_num) == -1)
+    {
+        printf("Enter the new user number: \n");
+        scanf("%s", user_num);
+        if(validate_user_ID(user_num) == -1)
+        {
+            printf("Invalid user ID\n");
+        }
+    }
+    
+    /*validate user password*/
+    while(validate_user_pw(user_pw) == -1)
+    {
+        printf("Enter the new user password: \n");
+        scanf("%s", user_pw);
+        if(validate_user_pw(user_pw) == -1)
+        {
+            printf("Invalid user password\n");
+            printf("Please use at least 1 of Lower & Upper Case,"
+                "Number and special characters\n");
+        }
+    }
+
     while(validate_user_lvl(user_lvl) != 1)
     {
         printf("Enter the user level:\n");
@@ -678,6 +706,7 @@ int add_user(users_t * user)
         if(user_choice == 2)
             strcpy(user_lvl,USER);
     }
+
     printf("Enter user initial account balance: \n");
     scanf("%lf", &acc_balance);
 
@@ -1573,7 +1602,8 @@ int validate_user_ID(const char user_ID[])
  * INPUTS:
  * Takes user_pw[], which is an assumed string.
  * OUTPUTS:
- * Returns the number of characters in that string, -1 if the password is invalid.
+ * Returns the number of characters in that string, -1 if the password is 
+ * invalid.
  * POST:
  * what happens to pointers and data after the function, I dunno.
 *******************************************************************************/
@@ -1603,13 +1633,9 @@ int validate_user_pw(const char user_pw[])
         }
         
     }
-    if ((lower + upper + digit + special) != strlen(user_pw)){
-        printf("Please use at least 1 of Lower & Upper Case, Number and special characters\n");
+    if ((lower < 1) || (upper < 1) || (digit < 1) || (special < 1)) 
+    {		
         return -1;
-    }
-    else if ((lower < 1) || (upper < 1) || (digit < 1) || (special < 1)) {	
-    printf("Please use at least 1 of Lower & Upper Case, Number and special characters\n");	
-    return -1;
     }
     return (lower + upper + digit + special);
 }
