@@ -46,6 +46,7 @@
 #define MAX_TYPE_LEN 15
 #define USER "user"
 #define ADMIN "admin"
+#define USER_DB "users.txt"
 
 /*defines for testing valid date_time inputs*/
 #define MONTHS_LOWER 1
@@ -233,11 +234,12 @@ int login_menu(logged_user_t * logged_user)
     /*check against database*/
     logged_user_t logger;
     FILE *fptr = NULL;
-    fptr = fopen("users.txt","r");
+    fptr = fopen(USER_DB,"r");
 
     if(fptr == NULL)
     {
-        printf("mem error file location doesnt exsist");
+        printf("mem error file location doesnt exsist\n");
+        return -1;
     }
 
     /*sort through file until found*/
@@ -491,6 +493,8 @@ void admin_menu(logged_user_t * user)
     strcpy(start->user_lvl,"start");
     start->next = NULL;
 
+    char user_ID[10];
+  
     read_users(start);
 
     int user_input = -1;
@@ -961,7 +965,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
 	
     /*open file database to check users*/
     FILE *fptr = NULL;
-    fptr = fopen("users.txt","r");
+    fptr = fopen(USER_DB,"r");
 
     if(fptr == NULL)
     {
@@ -977,7 +981,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
             fclose(fptr);
             return -1;
         }
-        if(strcmp(logger.user_num, target_acc) == 0)
+        if(strcmp(decryption("crypt",logger.user_num), target_acc) == 0)
         {
             fclose(fptr);
             break;
@@ -1763,11 +1767,11 @@ int validate_sq(const char user_ID[USER_MAX_NUM_LEN]) {
 /*******************************************************************************
  * Description
  * INPUTS:
- * char key[] (User ID), char string[]
+ * what is required to input into this function
  * OUTPUTS:
- * Returns the encrypted string.
+ * what gets returned
  * POST:
- * Key does not change, string changes to encrypted string.
+ * what happens to pointers and data after the function
 *******************************************************************************/
 const char* encryption(char key[], char string[])
 {
@@ -1799,11 +1803,11 @@ const char* encryption(char key[], char string[])
 /*******************************************************************************
  * Description
  * INPUTS:
- * char key[] (User ID), char string[]
+ * what is required to input into this function
  * OUTPUTS:
- * Returns the decrypted string.
+ * what gets returned
  * POST:
- * Key does not change, string changes to decrypted string.
+ * what happens to pointers and data after the function
 *******************************************************************************/
 const char* decryption(char key[], char string[])
 {
