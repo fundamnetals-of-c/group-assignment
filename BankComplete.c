@@ -786,7 +786,7 @@ int deposit(logged_user_t * user, double value)
     dt.minute = timeinfo->tm_min;
 
     #ifdef DEBUG
-    printf("the local time is> %d/%d/%d %d:%d\n",
+    printf("the local time is> %02d/%02d/%04d %02d:%02d\n",
         dt.day,dt.month,dt.year,dt.hour,dt.minute);
     #endif
 	    
@@ -861,23 +861,23 @@ int withdraw(logged_user_t * user, double value)
     dt.minute = timeinfo->tm_min;
 
     #ifdef DEBUG
-    printf("the local time is> %d/%d/%d %d:%d\n",
+    printf("the local time is> %02d/%02d/%04d %02d:%02d\n",
         dt.day,dt.month,dt.year,dt.hour,dt.minute);
     #endif
 	
     /*check if user has enough balance to withdraw*/
     if(user->acc_balance < value)
     {
+        #ifdef DEBUG
+        printf("not enough funds to withdraw");
+        #endif
+
         printf("error: not enough funds within account");
         transaction_details.trans_dt = dt;
         strcpy(transaction_details.type, "low fund");
         transaction_details.principal = user->acc_balance;
         transaction_details.trans_val = -1 * value;
         transaction_details.acc_balance = user->acc_balance;
-
-        #ifdef DEBUG
-        printf("not enough funds to withdraw");
-        #endif
     }
     else
     {
@@ -959,7 +959,7 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     dt.minute = timeinfo->tm_min;
 
     #ifdef DEBUG
-    printf("the local time is> %d/%d/%d %d:%d\n",
+    printf("the local time is> %02d/%02d/%04d %02d:%02d\n",
         dt.day,dt.month,dt.year,dt.hour,dt.minute);
     #endif	
 	
@@ -990,16 +990,16 @@ int transfer(logged_user_t * user, const char target_acc[], double value)
     /*check if the account has enough to transfer*/
     if(user->acc_balance < value)
     {
+        #ifdef DEBUG
+        printf("not enough funds to transfer");
+        #endif
+
         transaction_details.trans_dt = dt;
         strcpy(transaction_details.type, "low funds");
         transaction_details.principal = user->acc_balance;
         transaction_details.trans_val = -1 * value;
         transaction_details.acc_balance = user->acc_balance;
         return user->acc_balance;
-	    
-        #ifdef DEBUG
-        printf("not enough funds to transfer");
-        #endif	    
     }
     else
     {
