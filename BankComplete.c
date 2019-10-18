@@ -1153,7 +1153,7 @@ int change_password(const char user_ID[USER_MAX_NUM_LEN])
         it = it->next;
     }
     
-    printf("What would you like to change your password to>");
+    printf("What would you like to change your password to> ");
     scanf("%s", pw_holder);
 
     /*validate pw*/
